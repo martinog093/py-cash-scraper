@@ -1,0 +1,46 @@
+# ── Credentials & secrets (never commit) ─────────────────────────────────────
+.env
+credentials/
+config-backend/.env
+
+# ── Output & logs (generated per run) ────────────────────────────────────────
+output/
+logs/
+*.log
+
+# ── Python artifacts ──────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# ── Test / tooling cache ──────────────────────────────────────────────────────
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── OS & editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# ── Zip archives ─────────────────────────────────────────────────────────────
+*.zip
+
+# ── Client-provided sample files ─────────────────────────────────────────────
+"Scraping job/Client/"
+
+# ── Unrelated projects in this directory ─────────────────────────────────────
+Edgar Scraper/
+gts-v2/
+signaler-v2/
+signaler-v2-update.md
+voucher.html

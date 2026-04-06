@@ -1,0 +1,1947 @@
+
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><link href="/BrowserView/Content/fontawesomeCSS?v=" rel="stylesheet"/>
+<script src="/BrowserView/Content/fontawesomeJS?v=1oWg2gxf4oU0lUWyGU5hvfrP-OH5r56lf5drA0Y487o1"></script>
+<script src="/BrowserView/bundles/AngularJs?v=ztc6IGsV1gSkLCNN4uKJulZKBSpb7F5ocKvXcXm-Ha01"></script>
+<link href="/BrowserView/Content/DefaultCss?v=ANnJU2UkbWnrW1xUBz3vfk9iI67BJGqBJRDHl6XcLCM1" rel="stylesheet"/>
+
+    <title>Search - BrowserView</title>
+    <script src="/BrowserView/bundles/ControllerDefaultJs?v=dtmS93JiDySk0ra-F4pyVnxphz8NgJEfGj3yDFFXIYE1"></script>
+
+    <link href="/BrowserView/Content/DocTypeTreeViewCss?v=HoP-XvsOASHrHYYbic-oKy5y-q3tmwkQjoattQRO20I1" rel="stylesheet"/>
+
+
+    <script type="text/javascript">
+       angular.element(document.getElementsByTagName('head')).append(angular.element('<base id="base_url" href="' + window.location.pathname + '" />'));
+     //   angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="https://srvtesting.newvisionsystems.com/BrowserViewX86//'" />'));
+    </script>
+    <style>
+
+
+.navbar-nav li:hover > ul.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu {
+    position:relative;
+}
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top:-6px;
+}
+
+/* rotate caret on hover */
+.dropdown-menu > li > a:hover:after {
+    text-decoration: underline;
+    transform: rotate(-90deg);
+} 
+
+/*change shop cart layout*/
+ul.dropdown-menu{
+    min-width:250px;
+}
+ul.dropdown-menu li .item{
+    display:block;
+    padding:3px 10px;
+    margin: 3px 0;
+    border: 1px ridge;
+}
+ul.dropdown-menu li .item:hover{
+    background-color:#f3f3f3;
+}
+ul.dropdown-menu li .item:after{
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+ul.dropdown-menu li .item-left{
+    float:left;
+}
+ul.dropdown-menu li .item-left img,
+ul.dropdown-menu li .item-left span.item-info{
+    float:left;
+}
+ul.dropdown-menu li .item-left span.item-info{
+    margin-left:10px;   
+}
+ul.dropdown-menu li .item-left span.item-info span{
+    display:block;
+}
+ul.dropdown-menu li .item-right{
+    float:right;
+}
+ul.dropdown-menu li .item-right button{
+    margin-top:14px;
+}
+
+
+</style>
+
+<title>
+
+</title></head>
+<body ng-app="Main" ng-controller="MainController">
+        <div ng-show="documentService.Auth.enableAuthentication" class="navbar navbar-default" ng-controller="AccountController">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" ng-click="isCollapsed = !isCollapsed">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="./" class="navbar-brand" target="_self">{{documentService.Globals.clientName}}</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse" ng-class="{true: '', false: 'in'}[isCollapsed]" ng-controller="AccountController">
+                        <ul class="nav navbar-nav navbar-right" ng-class="{true: '', false: 'in'}[isCollapsed]">
+                            <li class="nav-item dropdown" ng-show="documentService.Auth.loggedin && documentService.Globals.enablePrintCart">
+                                <a href="PrintCart" id="navbarDropdownMenuLink" class="nav-link dropdown-toggle" target="_blank" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>Print Cart ({{documentService.Auth.nPrintCart}})
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li ng-repeat="item in documentService.Auth.printCartItemList track by $index">
+                                        <span class="item">
+                                            <span class="item-left">
+                                                <span class="item-info">
+                                                    <span>Instr#: {{item.file_num}}</span>
+                                                    <span>PrintRange: {{item.page_range}}</span>
+                                                </span>
+                                            </span>
+                                            <span class="item-right">
+                                            </span>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+
+
+                            <li ng-show="!documentService.Auth.loggedin"><a href="Login" target="_self">Log in</a></li>
+                            <li ng-show="documentService.Auth.loggedin"><a href="ManageAccount" target="_self"><i class="fas fa-user"></i>{{documentService.Auth.loggedUserName}}</a></li>
+                            <li ng-show="documentService.Auth.loggedin"><a href="" ng-click="LogOut()">Log off</a></li>
+                        </ul>
+                </div>
+            </div>
+        </div>
+
+
+ 
+    <div class="container-fluid" ng-controller="SearchController">
+        <div class="row">
+            <div class="col-sm-12">
+                <table style="width: 100%">
+                    <tr>
+                        <td ng-show="documentService.Globals.clientLogoPath" style="width: 1px; padding: 5px">
+                            <img ng-src="{{documentService.Globals.clientLogoPath}}" />
+                        </td>
+                        <td style="padding: 5px">
+                            <h2 ng-class="{'text-center': !documentService.Globals.clientLogoPath}">{{documentService.Globals.clientName}}
+                            </h2>
+                            <div ng-repeat="descLine in documentService.Globals.clientDescription">{{descLine}}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="center-block" style="width: 300px; height: 75px; font-size: smaller; color: darkred;">
+                <div ng-show="documentService.Globals.verifyDate">Verified as of {{documentService.Globals.verifyDate}}</div>
+                <div ng-show="documentService.Globals.showVerifiedOnly">Search results include verified documents only</div>
+                <div ng-show="documentService.Globals.showLastRecordedDocumentInfo">
+                    Last Document Recorded<br />
+                    {{documentService.Globals.lastDocumentRecordedDateTime}}<br />
+                    {{documentService.Globals.lastDocumentRecordedInfo}}  
+                </div>
+            </div>
+        </div>
+        <div class="row" style="text-align: right; padding-right: 10px;">
+            <section id="help">
+                <div>
+                    <button type="button" class="btn-xs btn-primary" ng-click="getHelp()">Help?</button>
+                </div>
+            </section>
+        </div>
+
+        <tabset ng-show="!documentService.Auth.show">
+            <tab heading="Search" active="mainTabs[0]">
+
+                <div style="margin-left: 10px">
+                    <tabset>
+                        <tab ng-if="documentService.Globals.showParty" heading="Party" active="searchTabs[0]" select="clearCriteria()">
+                            <form novalidate name="partySearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">
+                                        Party Name
+
+                                        <div>
+                                        <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div ng-class="{'has-error': partySearchForm.$submitted && !documentService.SearchCriteria.searchTerm}">
+                                            <input type="text" name="partyName" class="form-control" ng-model="documentService.SearchCriteria.searchTerm" required
+                                                placeholder="Party Name" />
+                                        </div>
+                                        <span ng-show="partySearchForm.$submitted && !documentService.SearchCriteria.searchTerm" style="color: red">
+                                            Enter a party name to search on
+                                        </span>
+                                        <span class="help-block">
+                                            Last-Name First-Name (e.g., Smith Al), Company Name (e.g., Gulf Utility)
+                                            Use no commas between the First and Last Names.
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-2"> 
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'partySearchForm')"
+                                            on-success="setResponse(response, 'partySearchForm')"
+                                            on-expire="cbExpiration('partySearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Document Type (Optional)</div>
+                                    <div class="col-sm-7">
+                                        <input class="form-control" ng-model="documentService.SearchCriteria.searchDocType" placeholder="Selected Document Types" />
+                                        <span class="help-block">Use commas to separate codes for multiple doc type searches (ex. MTG) or select from groups below</span>
+                                        <div class="form-control" style="height:150px; overflow-x:hidden; overflow-y:scroll">
+                                            <ul class="tree-view-wrapper">
+                                                <li ng-repeat="parentNode in documentService.Globals.docTypes">
+                                                    <span class="show-hide" ng-click="showHideChildNode(parentNode.id, 'party')">
+                                                        <i id="node_icon_party_{{parentNode.id}}" class="fa fa-plus-square"></i>
+                                                    </span>
+                                                    <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="parentNode.checked" ng-change="checkChange(parentNode)">
+                                                    <label class="ng-binding">{{parentNode.name}}</label>
+                                                    <ul id="party_{{parentNode.id}}" class="hide" ng-if="checkIfChildren(parentNode)">
+                                                        <li ng-repeat="n in parentNode.children">
+
+
+                                                            <span style="padding-right: 6px" class=""></span>
+                                                            <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="n.checked" ng-change="checkChange(n)">
+                                                            <label class="ng-binding">{{n.value}} : {{n.name}}</label>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <div class="row row-padding-topborder" ng-show="1">
+                                    <div class="col-sm-3">Town (Optional)</div>
+                                        <div class="col-sm-4">
+                                            <select class="form-control" ng-model="documentService.SearchCriteria.searchCommonTown">
+                                                <option value=""></option>
+                                                <option ng-repeat="town in documentService.Globals.commonTowns" 
+                                                    value="{{town.common_town_value}}">{{town.common_town_name}}</option>
+                                            </select>
+                                        </div>
+                                </div>
+                                <br />
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': partySearchForm.$submitted && partySearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="partySearchForm.$submitted && partySearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': partySearchForm.$submitted && partySearchForm.todate.$error.date}">
+                                             To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="partySearchForm.$submitted && partySearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+                        <tab ng-if="documentService.Globals.showDocumentType" heading="Document Type" active="searchTabs[1]"  select="clearCriteria()">
+                            <form novalidate name="docSearchForm">
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Document Type
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <input class="form-control" ng-model="documentService.SearchCriteria.searchDocType" placeholder="Selected Document Types" required/>
+                                        <span ng-show="docSearchForm.$submitted && !documentService.SearchCriteria.searchDocType" style="color: red">
+                                            Select a document type to search on
+                                        </span>
+                                        <span class="help-block">Use commas to separate codes for multiple doc type searches (ex. MTG) or select from groups below</span>
+
+                                        <div class="form-control" style="height:150px; overflow-x:hidden; overflow-y:scroll">
+                                              <ul class="tree-view-wrapper">
+                                                <li ng-repeat="parentNode in documentService.Globals.docTypes">
+                                                    <span class="show-hide" ng-click="showHideChildNode(parentNode.id, 'docType')">
+                                                        <i id="node_icon_docType_{{parentNode.id}}" class="fa fa-plus-square"></i>
+                                                    </span>
+                                                    <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="parentNode.checked" ng-change="checkChange(parentNode)">
+                                                    <label class="ng-binding">{{parentNode.name}}</label>
+                                                    <ul id="docType_{{parentNode.id}}" class="hide" ng-if="checkIfChildren(parentNode)">
+                                                        <li ng-repeat="n in parentNode.children">
+
+                                                            <span style="padding-right: 6px" class=""></span>
+                                                            <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="n.checked" ng-change="checkChange(n)">
+                                                            <label class="ng-binding">{{n.value}} : {{n.name}}</label>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'docSearchForm')"
+                                            on-success="setResponse(response, 'docSearchForm')"
+                                            on-expire="cbExpiration('docSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+                                <br />
+
+                                <div class="row row-padding-topborder" ng-show="1">
+                                    <div class="col-sm-3">Town (Optional)</div>
+                                        <div class="col-sm-4">
+                                            <select class="form-control" ng-model="documentService.SearchCriteria.searchCommonTown">
+                                                <option value=""></option>
+                                                <option ng-repeat="town in documentService.Globals.commonTowns" 
+                                                    value="{{town.common_town_value}}">{{town.common_town_name}}</option>
+                                            </select>
+                                        </div>
+                                </div>
+                                <br />
+
+                                <div class="row row-padding-topborder" ng-show="documentService.Globals.showConsideration">
+                                    <div class="col-sm-3">Consideration Amount (Optional)</div>
+                                    <div class="col-sm-7">
+                                        <div ng-class="{'has-error': docSearchForm.$submitted && docSearchForm.considAmount.$error.pattern}">
+                                            <input type="text" name="considAmount" class="form-control"
+                                                ng-model="documentService.SearchCriteria.searchConsideration"
+                                                pattern="\d+(\.\d{2})?"
+                                                placeholder="Consideration Amount" />
+                                        </div>
+                                        <span class="help-block">Results will have a consideration equal to or greater than the amount entered (eg. 1000.01).</span>
+                                    </div>
+                                <br />
+                                </div>
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': docSearchForm.$submitted && docSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p ng-class="{'input-group has-error': documentService.Globals.dateRange && docSearchForm.$submitted && !documentService.SearchCriteria.fromDate, 'input-group': true}">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY"
+                                                    ng-required="documentService.Globals.dateRange"/>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span ng-show="documentService.Globals.dateRange && docSearchForm.$submitted && !documentService.SearchCriteria.fromDate" style="color: red">
+                                                Enter a starting date to search on
+                                            </span>
+                                            <span class="error" ng-show="docSearchForm.$submitted && docSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': docSearchForm.$submitted && docSearchForm.todate.$error.date}">
+                                            To
+                                            <p ng-class="{'input-group has-error': documentService.Globals.dateRange && docSearchForm.$submitted && !documentService.SearchCriteria.toDate, 'input-group': true}">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY"
+                                                    ng-required="documentService.Globals.dateRange" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span ng-show="documentService.Globals.dateRange && docSearchForm.$submitted && !documentService.SearchCriteria.toDate" style="color: red">
+                                                Enter an ending date to search on
+                                            </span>
+                                            <span class="error" ng-show="docSearchForm.$submitted && docSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+                        <tab ng-if="documentService.Globals.showAbstraction" heading="Property Type" active="searchTabs[5]" select="clearCriteria()">
+                            <form novalidate="novalidate" name="propertySearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Type of Search
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span ng-class="{'has-error': propertySearchForm.$submitted && !documentService.SearchCriteria.searchPropertyType}">
+                                            <select class="form-control" ng-model="documentService.SearchCriteria.searchPropertyType" required="required">
+                                                <option>Property Name</option>
+                                                <option>Plat Book/Page</option>
+                                                <option>Section/Township/Range</option>
+                                            </select>
+                                            <span ng-show="propertySearchForm.$submitted && !documentService.SearchCriteria.searchPropertyType" style="color: red">
+                                                Enter a property type to search on
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row row-padding">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-3">
+                                        <span ng-class="{'has-error': propertySearchForm.$submitted && !documentService.SearchCriteria.searchPropertyTypeEntry}">
+                                            <input type="text" ng-model="documentService.SearchCriteria.searchPropertyTypeEntry" class="form-control" required="required" />
+                                            <span ng-show="propertySearchForm.$submitted && !documentService.SearchCriteria.searchPropertyTypeEntry" style="color: red">
+                                                Enter a name to search on
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="propertySearch()">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'propertySearchForm')"
+                                            on-success="setResponse(response, 'propertySearchForm')"
+                                            on-expire="cbExpiration('propertySearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </tab>
+
+                        <tab ng-if="documentService.Globals.showFileNumber" heading="Instrument Number" active="searchTabs[2]"  select="clearCriteria()">
+                            <form novalidate name="fileNumberSearchForm">
+                                <div class="row row-padding">
+                                    
+                                    <div class="col-sm-3">Instrument Number
+
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div ng-class="{'has-error': fileNumberSearchForm.$submitted && !documentService.SearchCriteria.searchFileNumber}">
+                                            <input type="text" class="form-control"
+                                                ng-model="documentService.SearchCriteria.searchFileNumber"
+                                                placeholder="Instrument Number"
+                                                required />
+                                        </div>
+                                        <span ng-show="fileNumberSearchForm.$submitted && !documentService.SearchCriteria.searchFileNumber" style="color: red">
+                                            Enter a Instrument Number to search on
+                                        </span>
+                                        <span class="help-block">Numbers and/or Characters (e.g., 1999002121)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'fileNumberSearchForm')"
+                                            on-success="setResponse(response, 'fileNumberSearchForm')"
+                                            on-expire="cbExpiration('fileNumberSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+                        <tab ng-if="documentService.Globals.showBookPage" heading="Book/Page" active="searchTabs[3]"  select="clearCriteria()">
+                            <form novalidate name="bookPageSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Book / Page Type
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span ng-class="{'has-error': bookPageSearchForm.$submitted && !documentService.Globals.selectedBookType}">
+                                           
+                                            <select class="form-control"
+                                                ng-options="bookType.book_name for bookType in documentService.Globals.bookTypes track by bookType.book_code"
+                                                ng-model="documentService.Globals.selectedBookType">
+                                                
+                                            </select>
+                                            <span ng-show="bookPageSearchForm.$submitted && !documentService.Globals.selectedBookType" style="color: red">
+                                                Enter a book type to search on
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Book / Page
+                                        
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="input-group">
+                                            <span ng-class="{'has-error': bookPageSearchForm.$submitted && !documentService.SearchCriteria.searchBook}">
+                                                <input type="text" ng-model="documentService.SearchCriteria.searchBook"
+                                                    class="form-control"
+                                                    size="2"
+                                                    placeholder="Book"
+                                                    pattern="\d+"
+                                                    required />
+                                            </span>
+                                            <span class=input-group-addon>/</span>
+                                            <span ng-class="{'has-error': bookPageSearchForm.$submitted && documentService.Globals.selectedBookType == 'O' && !documentService.SearchCriteria.searchPage}">
+                                                <input type="text" ng-model="documentService.SearchCriteria.searchPage"
+                                                    class="form-control"
+                                                    size="2"
+                                                    placeholder="Page"
+                                                    ng-required="documentService.Globals.selectedBookType == 'O'"
+                                                    pattern="\d+" />
+                                            </span>
+                                        </div>
+                                        <div ng-show="bookPageSearchForm.$submitted && !documentService.SearchCriteria.searchBook" style="color: red">
+                                            Enter a book number to search on
+                                        </div>
+                                        <div ng-show="bookPageSearchForm.$submitted && documentService.Globals.selectedBookType == 'O' && !documentService.SearchCriteria.searchPage" style="color: red">
+                                            Enter a page number to search on
+                                        </div>
+                                        <span class="help-block">Numbers (e.g., 12345/1234)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'bookPageSearchForm')"
+                                            on-success="setResponse(response, 'bookPageSearchForm')"
+                                            on-expire="cbExpiration('bookPageSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+                        
+                        <tab ng-if="1" heading="Town/Lot/Block" active="searchTabs[4]"  select="clearCriteria()">
+                            <form novalidate name="townLotBlockSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Town
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                        <div class="col-sm-4">
+                                            <span ng-class="{'has-error': townLotBlockSearchForm.$submitted && !documentService.SearchCriteria.searchCommonTown}">
+                                                <select class="form-control" ng-model="documentService.SearchCriteria.searchCommonTown" required>
+                                                    <option ng-repeat="town in documentService.Globals.commonTowns" 
+                                                        value="{{town.common_town_value}}">{{town.common_town_name}}</option>
+                                                </select>
+                                                <span ng-show="townLotBlockSearchForm.$submitted && !documentService.SearchCriteria.searchCommonTown" style="color: red">
+                                                    Select a Town to search on
+                                                </span>
+                                            </span>
+                                        </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'townLotBlockSearchForm')"
+                                            on-success="setResponse(response, 'townLotBlockSearchForm')"
+                                            on-expire="cbExpiration('townLotBlockSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding" ng-show="!0">
+                                    <div class="col-sm-3">Lot / Block (Optional) </div>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchLot"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Lot"/>
+                                                <span class=input-group-addon>/</span>
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchBlock"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Block" />
+                                            </div>
+                                    </div>
+                                </div>   
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Document Type (Optional)</div>
+                                    <div class="col-sm-7">
+                                        <input class="form-control" ng-model="documentService.SearchCriteria.searchDocType" placeholder="Selected Document Types" />
+                                        <span class="help-block">Use commas to separate codes for multiple doc type searches (ex. MTG) or select from groups below</span>
+                                        <div class="form-control" style="height:150px; overflow-x:hidden; overflow-y:scroll">
+                                            <span ng-show="!documentService.Globals.docTypes">Loading Document Types...</span>
+                                            <ul class="tree-view-wrapper">
+                                                <li ng-repeat="parentNode in documentService.Globals.docTypes">
+                                                    <span class="show-hide" ng-click="showHideChildNode(parentNode.id, 'town')">
+                                                        <i id="node_icon_town_{{parentNode.id}}" class="fa fa-plus-square"></i>
+                                                    </span>
+                                                    <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="parentNode.checked" ng-change="checkChange(parentNode)">
+                                                    <label class="ng-binding">{{parentNode.name}}</label>
+                                                    <ul id="town_{{parentNode.id}}" class="hide" ng-if="checkIfChildren(parentNode)">
+                                                        <li ng-repeat="n in parentNode.children">
+                                                            <span style="padding-right: 6px" class=""></span>
+                                                            <input class="tree-checkbox ng-valid ng-dirty" type="checkbox" ng-model="n.checked" ng-change="checkChange(n)">
+                                                            <label class="ng-binding">{{n.value}} : {{n.name}}</label>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Party Name (Optional)</div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="partyName" class="form-control" ng-model="documentService.SearchCriteria.searchPartyName" placeholder="Party Name" />
+                                            <span class="help-block">
+                                            Last-Name First-Name (e.g., Smith Al), Company Name (e.g., Gulf Utility)
+                                            Use no commas between the First and Last Names.
+                                        </span>
+                                    </div>
+                                  </div>                                           
+                                                                    
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': townLotBlockSearchForm.$submitted && townLotBlockSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="townLotBlockSearchForm.$submitted && townLotBlockSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': townLotBlockSearchForm.$submitted && townLotBlockSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="townLotBlockSearchForm.$submitted && townLotBlockSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+                        
+                        <tab ng-if="documentService.Globals.showTownMeeting" heading="Board/Commission Name" active="searchTabs[6]"  select="clearCriteria()">
+                            <form novalidate name="meetingSearchForm">                                                        
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Board/Commission Name
+
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>                                  
+                                    <div class="col-sm-7">
+                                        <div ng-class="{'has-error': meetingSearchForm.$submitted && !documentService.SearchCriteria.searchMeetingPartyName}">
+                                            <input type="text" class="form-control"
+                                                ng-model="documentService.SearchCriteria.searchMeetingPartyName" 
+                                                placeholder="Board/Commission Name"
+                                                required ="required" />
+                                            <span ng-show="meetingSearchForm.$submitted && !documentService.SearchCriteria.searchMeetingPartyName" style="color: red">
+                                            Enter a Board/Commission Name to search on
+                                            </span>                                            
+                                        </div> 
+                                        <span class="help-block">
+                                            Matches containing exact name entered will be returned. 
+                                            
+                                            </span>                                       
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'meetingSearchForm')"
+                                            on-success="setResponse(response, 'meetingSearchForm')"
+                                            on-expire="cbExpiration('meetingSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+
+                                <div class="row row-padding">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-7">                                        
+                                        <span class="help-block">
+                                            
+                                            If little or no results returned, search in list below and click box next to name.
+                                        </span>
+                                        <input class="form-control" ng-model="documentService.SearchCriteria.searchMeetingPartyNamesFilter" placeholder="Enter part of Name to filter list" />
+                                        <div class="form-control" style="height:150px; overflow-x:hidden; overflow-y:scroll">
+                                            <table class="table-striped" style="width:100%">
+                                                <tr ng-repeat="docType in documentService.Globals.meetingPartyNames | filter: documentService.SearchCriteria.searchMeetingPartyNamesFilter" style="padding-left: 5px;">
+                                                <td style="width: 20px"><input id="radio" type="checkbox" checklist-model="documentService.SearchCriteria.searchMeetingPartyNames" checklist-value="docType.party_name" /></td>                                                       
+                                                       <td>{{docType.party_name}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)<p>(Date Received by Town Clerk)</p></div>                                    
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': meetingSearchForm.$submitted && meetingSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="meetingSearchForm.$submitted && meetingSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': meetingSearchForm.$submitted && meetingSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="meetingSearchForm.$submitted && meetingSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>
+
+                        
+                        <tab ng-if="documentService.Globals.showMeetingDocumentType" heading="Meeting Document Type" active="searchTabs[8]"  select="clearCriteria()">
+                            <form novalidate name="meetingDocSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Meeting Document Type
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div ng-class="{'has-error': meetingDocSearchForm.$submitted && !documentService.SearchCriteria.searchMeetingDocType}">
+                                            <input type="text" class="form-control"
+                                                ng-model="documentService.SearchCriteria.searchMeetingDocType"
+                                                placeholder="Meeting Document Types"
+                                                required />
+                                        </div>
+                                        <span ng-show="meetingDocSearchForm.$submitted && !documentService.SearchCriteria.searchMeetingDocType" style="color: red">
+                                            Enter a document type to search on
+                                        </span>
+                                        <span class="help-block">Use commas to separate codes for multiple Document Type Searches (eg., MATAG,MATM)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'meetingDocSearchForm')"
+                                            on-success="setResponse(response, 'meetingDocSearchForm')"
+                                            on-expire="cbExpiration('meetingDocSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Search Meeting Document Types</div>
+                                    <div class="col-sm-7">
+                                        <input class="form-control" ng-model="documentService.SearchCriteria.searchMeetingDocTypesFilter" 
+                                            placeholder="Search Meeting Document Types" />
+                                        <span class="help-block">Use the above box to search document types by name or code</span>
+                                        <div class="form-control" style="height:150px; overflow-x:hidden; overflow-y:scroll">
+                                            <table class="table-striped" style="width:100%">
+                                                <tr ng-repeat="docType in documentService.Globals.meetingDocTypes | filter: documentService.SearchCriteria.searchMeetingDocTypesFilter" style="padding-left: 5px;">
+                                                    <td style="width: 20px"><input id="checkbox" type="checkbox" checklist-model="documentService.SearchCriteria.searchMeetingDocTypes" checklist-value="docType.value"></td>                                                    
+                                                    <td style="width: 100px">{{docType.value}}</td>
+                                                    <td>{{docType.name}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)<p>(Date Received by Town Clerk)</p></div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': meetingDocSearchForm.$submitted && meetingDocSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p ng-class="{'input-group has-error': documentService.Globals.dateRange && meetingDocSearchForm.$submitted && !documentService.SearchCriteria.fromDate, 'input-group': true}">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY"
+                                                    ng-required="documentService.Globals.dateRange"/>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span ng-show="documentService.Globals.dateRange && meetingDocSearchForm.$submitted && !documentService.SearchCriteria.fromDate" style="color: red">
+                                                Enter a starting date to search on
+                                            </span>
+                                            <span class="error" ng-show="meetingDocSearchForm.$submitted && meetingDocSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': meetingDocSearchForm.$submitted && meetingDocSearchForm.todate.$error.date}">
+                                            To
+                                            <p ng-class="{'input-group has-error': documentService.Globals.dateRange && meetingDocSearchForm.$submitted && !documentService.SearchCriteria.toDate, 'input-group': true}">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY"
+                                                    ng-required="documentService.Globals.dateRange" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span ng-show="documentService.Globals.dateRange && meetingDocSearchForm.$submitted && !documentService.SearchCriteria.toDate" style="color: red">
+                                                Enter an ending date to search on
+                                            </span>
+                                            <span class="error" ng-show="meetingDocSearchForm.$submitted && meetingDocSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab>
+
+
+                        
+                        <tab ng-if="documentService.Globals.showLegalDesc" heading="Legal Description" active="searchTabs[7]"  select="clearCriteria()">
+                            <form novalidate name="legalDescSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Legal Description Line 1 (Optional)
+
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="legalDesc" class="form-control" ng-model="documentService.SearchCriteria.searchLegalDesc"
+                                                placeholder="Legal Description Line 1" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'legalDescSearchForm')"
+                                            on-success="setResponse(response, 'legalDescSearchForm')"
+                                            on-expire="cbExpiration('legalDescSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': legalDescSearchForm.$submitted && legalDescSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="legalDescSearchForm.$submitted && legalDescSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': legalDescSearchForm.$submitted && legalDescSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="legalDescSearchForm.$submitted && legalDescSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>
+
+                          
+                        <tab ng-if="documentService.Globals.showMapNumber" heading="Map Number" active="searchTabs[9]"  select="clearCriteria()">
+                            <form novalidate name="mapNumberSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Map Number
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="legalDesc" class="form-control" ng-model="documentService.SearchCriteria.searchMapNumber"
+                                                placeholder="Map Number" required="required" />
+                                           <span ng-show="meetingSearchForm.$submitted && !documentService.SearchCriteria.searchMeetingPartyName" style="color: red">
+                                               Enter a map number to search on                                           
+                                            </span> 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'mapNumberSearchForm')"
+                                            on-success="setResponse(response, 'mapNumberSearchForm')"
+                                            on-expire="cbExpiration('mapNumberSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': mapNumberSearchForm.$submitted && mapNumberSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="mapNumberSearchForm.$submitted && mapNumberSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': mapNumberSearchForm.$submitted && mapNumberSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="mapNumberSearchForm.$submitted && mapNumberSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>
+
+                         
+                        <tab ng-if="documentService.Globals.showDMP" heading="District/Map/Parcel" active="searchTabs[10]"  select="clearCriteria()">
+                            <form novalidate name="dmpSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">District (Optional) 
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="district" class="form-control" ng-model="documentService.SearchCriteria.searchDistrict"
+                                                placeholder="District" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'dmpSearchForm')"
+                                            on-success="setResponse(response, 'dmpSearchForm')"
+                                            on-expire="cbExpiration('dmpSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    
+                                    </div>
+                                </div>
+
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Map / Sub Map (Optional) </div>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchMap"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Map"/>
+                                                <span class=input-group-addon>/</span>
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchSubMap"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Sub Map" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Parcel / Sub Parcel (Optional) </div>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchParcel"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Parcel"/>
+                                                <span class=input-group-addon>/</span>
+                                                    <input type="text" ng-model="documentService.SearchCriteria.searchSubParcel"
+                                                        class="form-control"
+                                                        size="5"
+                                                        placeholder="Sub Parcel" />
+                                            </div>
+                                        </div>
+                                </div>
+                                  
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Parcel Week (Optional) </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="parcelweek" class="form-control" ng-model="documentService.SearchCriteria.searchParcelWeek"
+                                                placeholder="Parcel Week" />
+                                        </div>
+                                    </div>
+                                </div>
+                                                                                     
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Party Name (Optional)</div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="partyName" class="form-control" ng-model="documentService.SearchCriteria.searchPartyName" placeholder="Party Name" />
+                                            <span class="help-block">
+                                            Last-Name First-Name (e.g., Smith Al), Company Name (e.g., Gulf Utility)
+                                            Use no commas between the First and Last Names.
+                                        </span>
+                                    </div>
+                                  </div>
+
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': dmpSearchForm.$submitted && dmpSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="dmpSearchForm.$submitted && dmpSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': dmpSearchForm.$submitted && dmpSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="dmpSearchForm.$submitted && dmpSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>  
+
+                        
+                        <tab ng-show="documentService.Globals.showCaseNumber" heading="Case/Parcel" active="searchTabs[11]"  select="clearCriteria()">
+                            <form novalidate name="caseNumberSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Case/Parcel
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="caseNumber" class="form-control" ng-model="documentService.SearchCriteria.searchCaseNumber"
+                                                placeholder="Case/Parcel" required="required"/>
+                                            <span ng-show="caseNumberSearchForm.$submitted && !documentService.SearchCriteria.searchCaseNumber" style="color: red">
+                                               Enter a Case/Parcel to search on                                           
+                                            </span> 
+                                        </div>
+                                        <span class="help-block">A Case Number or Parcel Number must be entered exactly as it appears in a Court Field (e.g., 1234-1234-123)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'caseNumberSearchForm')"
+                                            on-success="setResponse(response, 'caseNumberSearchForm')"
+                                            on-expire="cbExpiration('caseNumberSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': caseNumberSearchForm.$submitted && caseNumberSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="caseNumberSearchForm.$submitted && caseNumberSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': caseNumberSearchForm.$submitted && caseNumberSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="caseNumberSearchForm.$submitted && caseNumberSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>
+
+                         
+                        <tab ng-show="documentService.Globals.showParcelID" heading="Parcel ID" active="searchTabs[12]"  select="clearCriteria()">
+                            <form novalidate name="parcelIDSearchForm">
+                                <div class="row row-padding">
+                                    <div class="col-sm-3">Parcel ID
+                                        <div>
+                                            <button ng-if=1 style="margin-top: 10px" type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear Last Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                       <div>
+                                            <input type="text" name="caseNumber" class="form-control" ng-model="documentService.SearchCriteria.searchParcelID"
+                                                placeholder="Parcel ID" required="required"/>
+                                            <span class="help-block">Number only.</span>
+                                            <span ng-show="parcelIDSearchForm.$submitted && !documentService.SearchCriteria.searchParcelID" style="color: red">
+                                               Enter a Parcel ID to search on                                           
+                                            </span> 
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-if=!1 type="reset" class="btn-xs btn-primary" ng-click="clearCriteria()">Clear</button>
+                                        <button type="submit" class="btn-xs btn-primary" ng-click="runSearch(true)">Search</button>
+                                    
+                                        <div ng-if=0
+                                            vc-recaptcha
+                                            key="'6Le9xHYiAAAAAGndb4zK0JbpvP7dDrMujo5lSi80'"
+                                            size="compact"
+                                            on-create="setWidgetId(widgetId, 'parcelIDSearchForm')"
+                                            on-success="setResponse(response, 'parcelIDSearchForm')"
+                                            on-expire="cbExpiration('parcelIDSearchForm')"
+                                        ></div>
+                                        <label ng-if=0 id="lblMessage" clientidmode="static">&nbsp Please verify that you are not a robot</label>
+
+                                    </div>
+                                </div>
+                                
+                                <div class="row row-padding-topborder">
+                                    <div class="col-sm-3">Date Range (Optional)</div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': parcelIDSearchForm.$submitted && parcelIDSearchForm.fromdate.$error.date}">
+                                            From
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="fromdate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.fromDate"
+                                                    is-open="documentService.Globals.fromOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, true)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="parcelIDSearchForm.$submitted && parcelIDSearchForm.fromdate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <div ng-class="{'has-error': parcelIDSearchForm.$submitted && parcelIDSearchForm.todate.$error.date}">
+                                            To
+                                            <p class="input-group" style="margin-bottom: 0px">
+                                                <input type="text" class="form-control" name="todate"
+                                                    datepicker-popup="MM/dd/yyyy"
+                                                    ng-model="documentService.SearchCriteria.toDate"
+                                                    is-open="documentService.Globals.toOpened"
+                                                    close-text="Close"
+                                                    placeholder="MM/DD/YYYY" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event, false)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                            <span class="error" ng-show="parcelIDSearchForm.$submitted && parcelIDSearchForm.todate.$error.date" style="color: red">Not a valid date format.</span>
+                                        </div>
+                                    </div>                                     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-4">
+                                        <p class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(7)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">7 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(30)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">30 Days</button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-link" style="padding-top: 0px" ng-click="setDates(90)" ng-disabled="documentService.Globals.fromOpened || documentService.Globals.toOpened">90 Days</button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </form>
+                        </tab>
+                    </tabset>
+
+                   
+                </div>
+            </tab>
+
+
+            <tab heading="Results" active="mainTabs[1]" select="documentService.ResetScroll()">           
+                <section id="working" ng-show="documentService.SearchResults.working">
+                    <h3 style="text-align: center">Please Wait...</h3>
+                    <img class="center-block" src="Images/spinner.gif" />
+                </section>
+                <section id="notFound" ng-show="documentService.SearchResults.results.length == 0" ng-controller="ResultsController">                    
+                    <div class="row">
+                        <div class="col-sm-12">                            
+                            <div class="h5" style="margin-left: 10px">Click <b>Search</b> Tab to initiate new search.</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-link" ng-click="exportSearchResults()">Print Results</button>                        
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <p class="h2 text-center">
+                                No records found
+                            </p>
+                        </div>                      
+                    </div>
+                </section>
+                <section id="results" ng-show="documentService.SearchResults.results.length > 0" ng-controller="ResultsController">
+                     
+                    <div class="row">
+                        <div class="col-sm-12">                            
+                            <div class="h5" style="margin-left: 10px">Click <b>Search</b> Tab to initiate new search.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn-link" ng-click="exportGridResults()">Print Results</button>                        
+                    </div>
+                    
+                     <div class="small text-right">                      
+                         <span>* Designates From Party</span>
+                         <span style="padding-left: 10px; display: inline-block">Click View to See Document Details</span>                         
+                    </div>
+                    <div class="small text-right" ng-show="1">
+                        <span style="padding-left: 10px; display: inline-block">Records with Status</span>  
+			             <span style="display: inline-block" class="record-notverified"> Other than V or B = Not Verified Record</span>                         			             
+                    </div>    
+                    
+                    <div class="small text-right" ng-show="1">
+                        <span style="padding-left: 10px; display: inline-block">Records with Flag:</span>  
+			             <span style="display: inline-block" class="record-revised"> R = Replaced Record, </span>
+			             <span style="display: inline-block" class="record-corrected"> C = Correction Record </span>
+                    </div>                  
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div ag-grid="gridOptions" class="ag-fresh" style="height: 60vh;"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div>
+                                <button ng-class="{'btn btn-link alert-info': documentService.SearchCriteria.startRow == pageNum,  'btn btn-link': documentService.SearchCriteria.startRow != pageNum}" ng-repeat="pageNum in documentService.SearchResults.pageNumbers track by $index" ng-click="changePage(pageNum)">{{$index + 1}}</button>
+                            </div>
+                            <div class="h5" style="margin-left: 10px">Retrieved records {{documentService.SearchResults.startRow}} through {{documentService.SearchResults.endRow}} of {{documentService.SearchResults.maxRows}} ({{documentService.SearchResults.totalRows}} total) records</div>
+                        </div>
+                    </div>
+                </section>
+            </tab>
+
+
+            <tab heading="Document" active="mainTabs[2]">
+
+                <section id="documentDetail" ng-show="documentService.DocumentResults.documentData" ng-controller="DocumentController">
+                      
+                    <div class="row">
+                        <div class="col-sm-12">                            
+                            <div class="h5" style="margin-left: 10px;">Click <b>Search</b> Tab to initiate new search. Click <b>Results</b> tab to view search results list.</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <table class="table vshrunk-table" ng-hide="documentWorking">
+                            <tr>
+                                <td style="text-align: right; font-weight: 600;">Type:</td>
+                                <td>{{documentService.DocumentResults.documentData.doc_type ? documentService.DocumentResults.documentData.doc_type : documentService.DocumentResults.documentData.type}}</td>
+                            </tr>
+                            <tr>
+                                
+                                <td style="text-align: right; font-weight: 600">Instrument No.:</td>                                
+                                <td>{{documentService.DocumentResults.documentData.file_num}}</td>
+                            </tr>
+                            <tr>
+                                
+                                <td style="text-align: right; font-weight: 600">Date:</td>
+                                <td>{{documentService.FormatDate(documentService.DocumentResults.documentData.rec_date)}} {{formatTime(documentService.DocumentResults.documentData.rec_time)}}</td>                                
+                            </tr>
+                            <tr>
+                                <td style="text-align: right; font-weight: 600">Book Type:</td>
+                                <td>{{documentService.DocumentResults.documentData.book_type}}</td>
+                            </tr>
+                            <tr ng-hide="documentService.Globals.swapPvPageWithPage">
+                                <td style="text-align: right; font-weight: 600">Book/Page:</td>
+                                <td>{{documentService.DocumentResults.documentData.book}}/{{documentService.DocumentResults.documentData.page}}</td>
+                            </tr>
+                            <tr ng-show="documentService.Globals.swapPvPageWithPage">
+                                <td style="text-align: right; font-weight: 600">Book/PV Page:</td>
+                                <td>{{documentService.DocumentResults.documentData.book}}/{{documentService.DocumentResults.documentData.pv_page}}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right; font-weight: 600">Pages:</td>
+                                <td>{{documentService.DocumentResults.pages}}</td>
+                            </tr>
+
+
+                            <tr ng-show="documentService.Globals.showConsideration">
+                                <td style="text-align: right; font-weight: 600">Consideration:</td>
+                                <td>{{documentService.DocumentResults.documentData.consid_1 | currency}}</td>
+                            </tr>
+
+                            <tr ng-show="documentService.Globals.showCaseNumber">
+                                <td style="text-align: right; font-weight: 600">Case/Parcel:</td>
+                                <td>
+                                        <div ng-repeat="case_num in documentService.DocumentResults.documentData.case_nums">{{case_num}}</div>                  
+
+
+                                </td>
+                            </tr>
+
+                             <tr ng-show="documentService.Globals.showParcelID">
+                                <td style="text-align: right; font-weight: 600">Parcel ID:</td>
+                                  <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="parcel in documentService.DocumentResults.documentData.parcelID track by $index">{{parcel}}</div>                                    
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                
+                                <td style="text-align: right; font-weight: 600">Legal:</td>
+                                <td>
+                                    <span ng-show="!documentService.DocumentResults.documentData.all_legals || documentService.DocumentResults.documentData.all_legals.length == 0">
+                                        {{documentService.DocumentResults.documentData.legal_1}}
+                                    </span>
+                                    <span ng-show="documentService.DocumentResults.documentData.all_legals.length > 0">
+                                        <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="legal in documentService.DocumentResults.documentData.all_legals track by $index">{{legal}}</div>
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr ng-show="1">
+                                <td style="text-align: right; font-weight: 600">Legal2:</td>
+                                <td>
+                                    <span ng-show="1">
+                                        {{documentService.DocumentResults.documentData.legal_2}}
+                                    </span>
+                                </td>
+                            </tr>
+
+                             <tr ng-show="1">
+                                <td style="text-align: right; font-weight: 600">Legal3:</td>
+                                <td>
+                                    <span ng-show="1">
+                                        {{documentService.DocumentResults.documentData.legal_3}}
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">District:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="district in documentService.DocumentResults.documentData.district track by $index">{{district}}</div>                                    
+                                </td>
+                            </tr>
+                             <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">Map:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="map in documentService.DocumentResults.documentData.map track by $index">{{map}}</div>                                    
+                                </td>
+                            </tr>
+                             <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">Sub Map:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="submap in documentService.DocumentResults.documentData.submap track by $index">{{submap}}</div>                                    
+                                </td>
+                            </tr>
+                             <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">Parcel:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="parcel in documentService.DocumentResults.documentData.parcel track by $index">{{parcel}}</div>                                    
+                                </td>
+                            </tr>
+                             <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">Sub Parcel:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="subparcel in documentService.DocumentResults.documentData.subparcel track by $index">{{subparcel}}</div>                                    
+                                </td>
+                            </tr>
+                             <tr ng-show="documentService.Globals.showDMP">
+                                <td style="text-align: right; font-weight: 600">Parcel Week:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="parcelweek in documentService.DocumentResults.documentData.parcelweek track by $index">{{parcelweek}}</div>                                    
+                                </td>
+                            </tr>
+
+                            <tr ng-show="1 && documentService.DocumentResults.documentData.town_Legal">
+                                <td style="text-align: right; font-weight: 600">Reference/Town:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="town in documentService.DocumentResults.documentData.town_Legal track by $index">{{town}}</div>
+                                </td>
+                            </tr>
+                                     
+                          
+
+                          
+                                                                        
+                            <tr>
+                                <td style="text-align: right; font-weight: 600">{{documentService.DocumentResults.documentData.direct_label}}:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" 
+                                        ng-repeat="party in documentService.DocumentResults.documentData.direct_parties track by $index">{{party}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right; font-weight: 600">{{documentService.DocumentResults.documentData.indir_label}}:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="party in documentService.DocumentResults.documentData.reverse_parties track by $index">{{party}}</div>
+                                </td>
+                            </tr>
+
+                            
+                            <tr ng-show="1">
+                                <td style="text-align: right; font-weight: 600">Notes:</td>
+                                <td>
+                                    <div ng-class="{'': $index == 0, 'row-padding-topborder': $index > 0}" ng-repeat="ref_1 in documentService.DocumentResults.documentData.ref_1s track by $index">{{ref_1}}</div>                                    
+                                    
+                                </td>
+                            </tr>
+
+                            <tr ng-show="documentService.DocumentResults.links && documentService.DocumentResults.links.length > 0">
+                                <td style="text-align: right; font-weight: 600">Linked Documents:</td>
+                                <td>
+                                    <div ng-repeat="link in documentService.DocumentResults.links track by $index">
+                                        <button class="btn btn-link" ng-show="!1"  style="padding: 1px" ng-click="documentService.FetchDocument(link.link_docid)" ng-disabled="convertToBool(link.invalid)">{{link.link_doctype}} {{link.link_cfn}}</button>
+                                        <button class="btn btn-link" ng-show="1"  style="padding: 1px" ng-click="documentService.FetchDocument(link.link_docid)" ng-disabled="convertToBool(link.invalid)">{{link.link_doctype}} {{link.link_book}}/{{link.link_page}}</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-show="documentService.DocumentResults.reverseLinks && documentService.DocumentResults.reverseLinks.length > 0">
+                                <td style="text-align: right; font-weight: 600">Linked Documents:</td>
+                                <td>
+                                    <div ng-repeat="link in documentService.DocumentResults.reverseLinks track by $index">
+                                        <button class="btn btn-link" ng-show="!1" style="padding: 1px" ng-click="documentService.FetchDocument(link.call_docid)" ng-disabled="convertToBool(link.invalid)">{{link.call_doctype}} {{link.call_cfn}}</button>
+                                        <button class="btn btn-link" ng-show="1" style="padding: 1px" ng-click="documentService.FetchDocument(link.call_docid)" ng-disabled="convertToBool(link.invalid)">{{link.call_doctype}} {{link.call_book}}/{{link.call_page}}</button>
+                                    </div>
+                                </td>
+                            </tr>
+                                <tr id="urlLink" ng-show="documentService.Globals.ShowUrlBtn">
+                                    <td  style="text-align: right; font-weight: 600">
+                                         <button id="urlBtn" class="btn-xs btn-primary" ng-click="getUrl(documentService.DocumentResults.documentData.id)" ng-show="canDisplayImage() == 0" ng-disabled="!documentService.DocumentResults.hasImage">Get Link to This Document</button>
+                                    </td>
+                                    <td id="urlText" style="word-break: break-all;"></td>
+                                </tr>
+                            <tr id="nextPrevButtons" ng-show="documentService.Globals.showNextPrevBtns"> 
+                                <td><button id="prevDocBtn" class="btn-xs btn-primary" ng-click="before_getNextPrevDocument(documentService.DocumentResults.documentData.prev_docid)" >Prev Document</button></td>
+                                <td><button id="nextDocBtn" class="btn-xs btn-primary" ng-click="before_getNextPrevDocument(documentService.DocumentResults.documentData.next_docid)" >Next Document</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+                <section id="documentImage" ng-show="canDisplayImage() == 0" ng-controller="DocumentController">
+                    <div class="col-md-8">
+                        <div class="row">
+                        </div>
+                        <div class="row">
+                            Page:
+                            <button class="btn-xs btn-default glyphicon glyphicon-arrow-left" ng-disabled="documentService.SearchCriteria.pageNumber == 1 || pageWorking" ng-click="changePage(false)"></button>                                                       
+                            <select ng-model="documentService.SearchCriteria.pageNumber" ng-options="page for page in documentService.DocumentResults.pageList" ng-change="beforeGetImage('PageChanged')"></select>
+                            <button class="btn-xs btn-default glyphicon glyphicon-arrow-right" ng-disabled="documentService.SearchCriteria.pageNumber == documentService.DocumentResults.pages || pageWorking" ng-click="changePage(true)"></button>
+                            <button class="btn-xs btn-primary" ng-click="rotate('-90')" ng-show="!documentService.DocumentResults.message" ng-disabled="!documentService.DocumentResults.hasImage">Rotate Left</button>
+                            <button class="btn-xs btn-primary" ng-click="rotate('90')" ng-show="!documentService.DocumentResults.message" ng-disabled="!documentService.DocumentResults.hasImage">Rotate Right</button>
+                            <button class="btn-xs btn-primary" ng-click="resetImage()" ng-show="!documentService.DocumentResults.message" ng-disabled="!documentService.DocumentResults.hasImage">Reset</button>
+                            
+                            
+                            <button class="btn-xs btn-primary" ng-click="getPDF(true)" ng-show="!documentService.Globals.enablePrintCart && blobSupported() && !documentService.DocumentResults.message" ng-disabled="pdfFetching">PDF / Print Page</button>
+                            <button class="btn-xs btn-primary" ng-click="getPDF(false)" ng-show="!documentService.Globals.enablePrintCart && blobSupported() && !documentService.DocumentResults.message" ng-disabled="pdfFetching">PDF / Print All Pages</button>
+                            <button class="btn-xs btn-primary" ng-click="addDocToCart(documentService.SearchCriteria.documentID, documentService.SearchCriteria.pageNumber)" ng-show="documentService.Globals.enablePrintCart">Add to Cart (Page)</button>
+                            <button class="btn-xs btn-primary" ng-click="addDocToCart(documentService.SearchCriteria.documentID, -1)" ng-show="documentService.Globals.enablePrintCart">Add to Cart (All Pages)</button>
+                            <br ng-show="documentService.Globals.enablePrintCart && documentService.Auth.newPageRange"/><span ng-show="documentService.Globals.enablePrintCart && documentService.Auth.newPageRange" style="color:black">Print Range: {{documentService.Auth.newPageRange}}</span>
+
+                            <span ng-show="pdfFetching" style="color:darkred">{{message}}</span>
+                            <span id="pdfLink"></span>
+                            <section id="imageError" ng-show="documentService.DocumentResults.message">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <p class="h2 text-center">
+                                            {{documentService.DocumentResults.message}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="imageMain" ng-show="!documentService.DocumentResults.message">
+                                <div ng-hide="documentService.DocumentResults.hasImage">
+                                    <p class="h3 text-center">
+                                        Image being retrieved, please wait...<br />
+                                        Larger images take longer to retrieve.
+                                    </p>
+                                </div>
+                                <div id="focal" style="border:1px solid black; margin-right: 25px;">
+                                    <button class="btn btn-default glyphicon glyphicon-plus-sign" style="position: absolute; top: 40px; right: 85px; z-index: 1" ng-click="changeZoom(0.05)"></button>
+                                    <button class="btn btn-default glyphicon glyphicon-minus-sign" style="position: absolute; top: 40px; right: 45px; z-index: 1" ng-click="changeZoom(-0.05)"></button>
+                                    <div id="imageContainer" style="overflow: auto; border: 1px solid black;" ng-hide="!documentService.DocumentResults.hasImage">
+                                        <img id="imageHolder" degrees='documentService.DocumentResults.angle' data-ng-src="{{documentService.DocumentResults.imageURL}}" style="border:1px solid black; pointer-events: none;" />
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </section>
+                <section id="restrictedImage" ng-show="canDisplayImage() == 1" ng-controller="DocumentController">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <p class="h2 text-center">
+                                Images for this document have been restricted.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                <section id="noImage" ng-show="canDisplayImage() == 2" ng-controller="DocumentController">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <p class="h2 text-center">
+                                This document has no images.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                <section id="noDoc" ng-show="canDisplayImage() == 3" ng-controller="DocumentController">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <p class="h2 text-center">
+                                No document selected.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                
+            </tab>
+        </tabset>
+
+        <div ng-show="documentService.Auth.show" class="row" ng-controller="AccountController">
+            <form novalidate name="authenticationForm" style="padding-left: 5%">
+                <div class="row row-padding">
+                    <div class="col-sm-5 h3">
+                        Please Log In
+                    </div>
+                </div>
+
+                <div class="row row-padding" ng-show="documentService.Auth.invalid">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-5 invalid-password">
+                        {{documentService.Auth.errorMessage}}
+                        
+                    </div>
+                </div>
+
+                <div class="row row-padding">
+                    <div class="col-sm-1">Email</div>
+                    <div class="col-sm-4">
+                        <div ng-class="{'has-error': authenticationForm.$submitted && !documentService.Auth.userName}">
+                            <input type="text" name="userName" class="form-control" ng-model="documentService.Auth.userName" required
+                                placeholder="User Name" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-padding">
+                    <div class="col-sm-1">Password</div>
+                    <div class="col-sm-4">
+                        <div ng-class="{'has-error': authenticationForm.$submitted && !documentService.Auth.password}">
+                            <input type="password" name="password" class="form-control" ng-model="documentService.Auth.password" required
+                                placeholder="Password" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn-xs btn-primary" ng-click="authenticate(false)">Login</button>
+                    </div>
+                </div>
+
+                <div class="row row-padding">
+                    <div class="col">
+                        <br />
+                        <li ng-show="documentService.Globals.externalSubscriptionApplication && documentService.Globals.externalLinkCreateAccount"><a href="{{documentService.Globals.externalLinkCreateAccount}}" target="_self">Create a new account</a></li>
+                        <br />
+                        <li ng-show="documentService.Globals.externalSubscriptionApplication && documentService.Globals.externalLinkForgotPassword"><a href="{{documentService.Globals.externalLinkForgotPassword}}" target="_self">Forgot your password?</a></li>
+                        <hr />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="container-fluid footer" style="text-align: left;">
+        <p style="border-top: solid #3f3f3f; display: block; font-size: x-small">
+            {{documentService.Globals.applicationCopyright}} .Ver {{documentService.Globals.applicationVersion}}
+        </p>
+    </div>
+</body>
+
+
+
+
+
+</html>

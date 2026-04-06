@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scraper Settings</title>
+  <style>
+    /* ── Token system ─────────────────────────────────────────────────── */
+    :root {
+      --ground:        #F4F5F2;
+      --surface:       #FFFFFF;
+      --surface-sub:   #F0F2EF;
+      --border:        #D8DDD9;
+      --border-focus:  #0C6E52;
+      --text:          #192520;
+      --text-sec:      #5C6E68;
+      --text-hint:     #8A9D96;
+      --accent:        #0C6E52;
+      --accent-dim:    #E1F2EC;
+      --accent-hover:  #0A5C44;
+      --success:       #0F7A4A;
+      --success-bg:    #E2F5EC;
+      --error:         #B02A2A;
+      --error-bg:      #FBECEC;
+      --warn:          #92580A;
+      --warn-bg:       #FEF3E2;
+      --callout-bg:    #EDF5F1;
+      --callout-border:#A8CCBE;
+      --chip-run-bg:   #FEF3E2;
+      --chip-run-text: #92580A;
+      --chip-ok-bg:    #E2F5EC;
+      --chip-ok-text:  #0F7A4A;
+      --chip-err-bg:   #FBECEC;
+      --chip-err-text: #B02A2A;
+      --chip-idle-bg:  #F0F2EF;
+      --chip-idle-text:#5C6E68;
+      --shadow-md:     0 2px 8px rgba(20,40,30,.09), 0 1px 2px rgba(20,40,30,.06);
+      --radius:        9px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ground:        #0F1A16;
+        --surface:       #182420;
+        --surface-sub:   #111D19;
+        --border:        #243630;
+        --border-focus:  #28C390;
+        --text:          #DDE9E3;
+        --text-sec:      #7A9990;
+        --text-hint:     #4D6860;
+        --accent:        #28C390;
+        --accent-dim:    #0A2E23;
+        --accent-hover:  #33D4A0;
+        --success:       #28C390;
+        --success-bg:    #092918;
+        --error:         #E07070;
+        --error-bg:      #2A0C0C;
+        --warn:          #FBB040;
+        --warn-bg:       #2A1A00;
+        --callout-bg:    #0E221C;
+        --callout-border:#2A4D3E;
+        --chip-run-bg:   #2A1A00;
+        --chip-run-text: #FBB040;
+        --chip-ok-bg:    #092918;
+        --chip-ok-text:  #28C390;
+        --chip-err-bg:   #2A0C0C;
+        --chip-err-text: #E07070;
+        --chip-idle-bg:  #1A2820;
+        --chip-idle-text:#7A9990;
+        --shadow-md:     0 2px 8px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+      }
+    }
+    :root[data-theme="light"] {
+      --ground:        #F4F5F2;
+      --surface:       #FFFFFF;
+      --surface-sub:   #F0F2EF;
+      --border:        #D8DDD9;
+      --border-focus:  #0C6E52;
+      --text:          #192520;
+      --text-sec:      #5C6E68;
+      --text-hint:     #8A9D96;
+      --accent:        #0C6E52;
+      --accent-dim:    #E1F2EC;
+      --accent-hover:  #0A5C44;
+      --success:       #0F7A4A;
+      --success-bg:    #E2F5EC;
+      --error:         #B02A2A;
+      --error-bg:      #FBECEC;
+      --warn:          #92580A;
+      --warn-bg:       #FEF3E2;
+      --callout-bg:    #EDF5F1;
+      --callout-border:#A8CCBE;
+      --chip-run-bg:   #FEF3E2;
+      --chip-run-text: #92580A;
+      --chip-ok-bg:    #E2F5EC;
+      --chip-ok-text:  #0F7A4A;
+      --chip-err-bg:   #FBECEC;
+      --chip-err-text: #B02A2A;
+      --chip-idle-bg:  #F0F2EF;
+      --chip-idle-text:#5C6E68;
+      --shadow-md:     0 2px 8px rgba(20,40,30,.09), 0 1px 2px rgba(20,40,30,.06);
+    }
+    :root[data-theme="dark"] {
+      --ground:        #0F1A16;
+      --surface:       #182420;
+      --surface-sub:   #111D19;
+      --border:        #243630;
+      --border-focus:  #28C390;
+      --text:          #DDE9E3;
+      --text-sec:      #7A9990;
+      --text-hint:     #4D6860;
+      --accent:        #28C390;
+      --accent-dim:    #0A2E23;
+      --accent-hover:  #33D4A0;
+      --success:       #28C390;
+      --success-bg:    #092918;
+      --error:         #E07070;
+      --error-bg:      #2A0C0C;
+      --warn:          #FBB040;
+      --warn-bg:       #2A1A00;
+      --callout-bg:    #0E221C;
+      --callout-border:#2A4D3E;
+      --chip-run-bg:   #2A1A00;
+      --chip-run-text: #FBB040;
+      --chip-ok-bg:    #092918;
+      --chip-ok-text:  #28C390;
+      --chip-err-bg:   #2A0C0C;
+      --chip-err-text: #E07070;
+      --chip-idle-bg:  #1A2820;
+      --chip-idle-text:#7A9990;
+      --shadow-md:     0 2px 8px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+    }
+
+    /* ── Reset ────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   'Helvetica Neue', Arial, sans-serif;
+      background: var(--ground);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem 5rem;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Page header ──────────────────────────────────────────────────── */
+    .page-header { width: 100%; max-width: 440px; margin-bottom: 1.75rem; }
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--text);
+      margin-bottom: .25rem;
+      text-wrap: balance;
+    }
+    .page-header p { font-size: .875rem; color: var(--text-sec); }
+
+    /* ── Form card ────────────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Sections ─────────────────────────────────────────────────────── */
+    .section { background: var(--surface); }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .85rem 1.25rem .7rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-label-bar {
+      width: 2.5px;
+      height: 13px;
+      border-radius: 2px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .section-label-text {
+      font-size: .6875rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+    }
+
+    .section-fields {
+      padding: 1.125rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.125rem;
+    }
+
+    /* ── Fields ───────────────────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: .35rem; }
+    .field label { font-size: .8125rem; font-weight: 500; color: var(--text); }
+    .field input {
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .55rem .8rem;
+      font-size: .9375rem;
+      font-family: inherit;
+      color: var(--text);
+      width: 100%;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+    .field input[type="password"] {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+      letter-spacing: .1em;
+    }
+    .field input::placeholder { color: var(--text-hint); letter-spacing: 0; }
+    .field input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+      background: var(--surface);
+    }
+
+    /* ── App password callout ─────────────────────────────────────────── */
+    .callout {
+      background: var(--callout-bg);
+      border: 1px solid var(--callout-border);
+      border-radius: 6px;
+      padding: .65rem .85rem;
+      font-size: .8rem;
+      color: var(--text-sec);
+      line-height: 1.55;
+    }
+    .callout strong { color: var(--text); font-weight: 600; }
+    .callout a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .callout a:hover { text-decoration: underline; }
+
+    /* ── Footer / save ────────────────────────────────────────────────── */
+    .form-footer {
+      background: var(--surface);
+      padding: 1.125rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: .7rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: .9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      letter-spacing: -.01em;
+      transition: background .15s, transform .1s, box-shadow .15s;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      box-shadow: 0 2px 6px rgba(12,110,82,.28);
+    }
+    .btn-primary:active:not(:disabled) { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .spin {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spin { animation: none; opacity: .6; } }
+
+    /* ── Status banners ───────────────────────────────────────────────── */
+    .status-banner {
+      display: none;
+      border-radius: 6px;
+      padding: .7rem .9rem;
+      font-size: .875rem;
+      line-height: 1.45;
+      gap: .55rem;
+      align-items: flex-start;
+    }
+    .status-banner.success { display: flex; background: var(--success-bg); color: var(--success); }
+    .status-banner.error   { display: flex; background: var(--error-bg);   color: var(--error);   }
+    .status-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.45; font-style: normal; }
+    .status-text { font-weight: 500; }
+    .status-sub  { font-weight: 400; opacity: .85; font-size: .8125rem; }
+
+    /* ── Run scrapers section ─────────────────────────────────────────── */
+    .scraper-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+    .scraper-check {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .scraper-check input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .scraper-name  { font-size: .875rem; font-weight: 500; color: var(--text); }
+    .scraper-sub   { font-size: .75rem; color: var(--text-sec); margin-top: .05rem; }
+
+    /* status chip */
+    .chip {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: .2rem .55rem;
+      border-radius: 99px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      flex-shrink: 0;
+    }
+    .chip.idle    { background: var(--chip-idle-bg); color: var(--chip-idle-text); }
+    .chip.running { background: var(--chip-run-bg);  color: var(--chip-run-text);  }
+    .chip.ok      { background: var(--chip-ok-bg);   color: var(--chip-ok-text);   }
+    .chip.fail    { background: var(--chip-err-bg);  color: var(--chip-err-text);  }
+
+    .chip-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .chip-dot.pulse {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .3; }
+    }
+
+    .run-note {
+      font-size: .8rem;
+      color: var(--text-sec);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>Scraper Settings</h1>
+    <p>Fill in your details and click Save — everything is stored securely.</p>
+  </header>
+
+  <!-- ── Credentials card ──────────────────────────────────────────────── -->
+  <div class="card" id="creds-card">
+
+    <!-- Email delivery -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-label-bar"></span>
+        <span class="section-label-text">Email delivery</span>
+      </div>
+      <div class="section-fields">
+
+        <div class="field">
+          <label for="email">Your email address</label>
+          <input type="email" id="email" name="email"
+                 placeholder="kash@gmail.com" autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="app_password">Gmail App Password</label>
+          <input type="password" id="app_password" name="app_password"
+                 placeholder="xxxx xxxx xxxx xxxx" autocomplete="off" />
+          <div class="callout">
+            <strong>Not your regular Gmail password.</strong>
+            Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a>,
+            create an app password under "Mail", and paste the 16-character code here.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Memphis Daily News -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-label-bar"></span>
+        <span class="section-label-text">Memphis Daily News login</span>
+      </div>
+      <div class="section-fields">
+
+        <div class="field">
+          <label for="mdn_username">Username</label>
+          <input type="text" id="mdn_username" name="mdn_username"
+                 placeholder="your@email.com" autocomplete="username" />
+        </div>
+
+        <div class="field">
+          <label for="mdn_password">Password</label>
+          <input type="password" id="mdn_password" name="mdn_password"
+                 placeholder="Your MDN password" autocomplete="current-password" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Save footer -->
+    <div class="form-footer">
+      <button type="button" class="btn-primary" id="save-btn">
+        <span class="spin" id="save-spin"></span>
+        <span id="save-label">Save Settings</span>
+      </button>
+      <div class="status-banner" id="save-status" role="alert" aria-live="polite">
+        <em class="status-icon" id="save-status-icon" aria-hidden="true"></em>
+        <div>
+          <div class="status-text" id="save-status-text"></div>
+          <div class="status-sub"  id="save-status-sub"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Run scrapers card ──────────────────────────────────────────────── -->
+  <div class="card" id="run-card">
+
+    <div class="section">
+      <div class="section-label">
+        <span class="section-label-bar"></span>
+        <span class="section-label-text">Run scrapers</span>
+      </div>
+      <div class="section-fields">
+
+        <!-- Cash Buyer -->
+        <div class="scraper-row">
+          <label class="scraper-check" for="chk-cash">
+            <input type="checkbox" id="chk-cash" checked />
+            <div>
+              <div class="scraper-name">Cash Buyer</div>
+              <div class="scraper-sub">Shelby County TN &amp; Bergen County NJ</div>
+            </div>
+          </label>
+          <div class="chip idle" id="chip-cash">
+            <span class="chip-dot"></span>
+            <span id="chip-cash-text">Never run</span>
+          </div>
+        </div>
+
+        <!-- Memphis Daily News -->
+        <div class="scraper-row">
+          <label class="scraper-check" for="chk-memphis">
+            <input type="checkbox" id="chk-memphis" checked />
+            <div>
+              <div class="scraper-name">Memphis Daily News</div>
+              <div class="scraper-sub">Tax Liens · Probate · Divorce filings</div>
+            </div>
+          </label>
+          <div class="chip idle" id="chip-memphis">
+            <span class="chip-dot"></span>
+            <span id="chip-memphis-text">Never run</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="btn-primary" id="run-btn">
+        <span class="spin" id="run-spin"></span>
+        <span id="run-label">▶ Run Now</span>
+      </button>
+      <div class="status-banner" id="run-status" role="alert" aria-live="polite">
+        <em class="status-icon" id="run-status-icon" aria-hidden="true"></em>
+        <div>
+          <div class="status-text" id="run-status-text"></div>
+          <div class="status-sub"  id="run-status-sub"></div>
+        </div>
+      </div>
+      <p class="run-note">You'll receive an email when the run completes.</p>
+    </div>
+
+  </div>
+
+  <script>
+    /* ─── Save credentials ──────────────────────────────────────────── */
+    const saveBtn    = document.getElementById('save-btn');
+    const saveSpin   = document.getElementById('save-spin');
+    const saveLabel  = document.getElementById('save-label');
+    const saveStatus = document.getElementById('save-status');
+
+    function setSaveLoading(on) {
+      saveBtn.disabled       = on;
+      saveSpin.style.display = on ? 'block' : 'none';
+      saveLabel.textContent  = on ? 'Saving…' : 'Save Settings';
+    }
+
+    function showSaveStatus(type, text, sub) {
+      saveStatus.className                           = 'status-banner ' + type;
+      document.getElementById('save-status-icon').textContent = type === 'success' ? '✓' : '✕';
+      document.getElementById('save-status-text').textContent = text;
+      document.getElementById('save-status-sub').textContent  = sub || '';
+    }
+
+    saveBtn.addEventListener('click', async () => {
+      const email   = document.getElementById('email').value.trim();
+      const appPass = document.getElementById('app_password').value.trim();
+      const mdnUser = document.getElementById('mdn_username').value.trim();
+      const mdnPass = document.getElementById('mdn_password').value.trim();
+
+      if (!email || !appPass || !mdnUser || !mdnPass) {
+        const first = ['email', 'app_password', 'mdn_username', 'mdn_password']
+          .find(id => !document.getElementById(id).value.trim());
+        document.getElementById(first).focus();
+        showSaveStatus('error', 'Please fill in all fields.', '');
+        return;
+      }
+
+      setSaveLoading(true);
+      saveStatus.className = 'status-banner';
+
+      try {
+        const body = new URLSearchParams({ email, app_password: appPass, mdn_username: mdnUser, mdn_password: mdnPass });
+        const res  = await fetch('/save', { method: 'POST', body });
+        const json = await res.json();
+
+        if (json.status === 'ok') {
+          showSaveStatus('success', 'All settings saved.', 'Your scraper is configured and ready to run.');
+        } else {
+          showSaveStatus('error', 'Could not save settings.', json.message || 'Please try again.');
+        }
+      } catch {
+        showSaveStatus('error', 'Could not reach the server.', 'Check your internet connection and try again.');
+      } finally {
+        setSaveLoading(false);
+      }
+    });
+
+    /* ─── Run scrapers ──────────────────────────────────────────────── */
+    const runBtn    = document.getElementById('run-btn');
+    const runSpin   = document.getElementById('run-spin');
+    const runLabel  = document.getElementById('run-label');
+    const runStatus = document.getElementById('run-status');
+
+    let pollInterval = null;
+
+    function setRunLoading(on) {
+      runBtn.disabled      = on;
+      runSpin.style.display = on ? 'block' : 'none';
+      runLabel.textContent  = on ? 'Starting…' : '▶ Run Now';
+    }
+
+    function showRunStatus(type, text, sub) {
+      runStatus.className                           = 'status-banner ' + type;
+      document.getElementById('run-status-icon').textContent = type === 'success' ? '✓' : '✕';
+      document.getElementById('run-status-text').textContent = text;
+      document.getElementById('run-status-sub').textContent  = sub || '';
+    }
+
+    function setChip(key, state, label) {
+      const chip    = document.getElementById('chip-' + key);
+      const chipTxt = document.getElementById('chip-' + key + '-text');
+      const dot     = chip.querySelector('.chip-dot');
+      chip.className = 'chip ' + state;
+      chipTxt.textContent = label;
+      dot.classList.toggle('pulse', state === 'running');
+    }
+
+    function relativeTime(isoString) {
+      if (!isoString) return '';
+      const diff = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
+      if (diff < 1)  return 'just now';
+      if (diff < 60) return diff + 'm ago';
+      return Math.round(diff / 60) + 'h ago';
+    }
+
+    function applyStatus(key, run) {
+      if (!run) { setChip(key, 'idle', 'Never run'); return 'idle'; }
+      const when = relativeTime(run.created_at);
+      if (run.status === 'completed') {
+        if (run.conclusion === 'success') {
+          setChip(key, 'ok', 'Done · ' + when);
+          return 'done';
+        } else {
+          setChip(key, 'fail', 'Failed · ' + when);
+          return 'failed';
+        }
+      }
+      setChip(key, 'running', 'Running…');
+      return 'running';
+    }
+
+    async function pollStatus() {
+      try {
+        const res  = await fetch('/status');
+        const data = await res.json();
+        const cashState    = applyStatus('cash',    data.cash_buyer);
+        const memphisState = applyStatus('memphis', data.memphis);
+
+        const stillRunning = cashState === 'running' || memphisState === 'running';
+        if (!stillRunning && pollInterval) {
+          clearInterval(pollInterval);
+          pollInterval = null;
+          setRunLoading(false);
+          showRunStatus('success', 'Run complete.', 'Check your email for the report.');
+        }
+      } catch { /* silent — retry next tick */ }
+    }
+
+    runBtn.addEventListener('click', async () => {
+      const scrapers = [];
+      if (document.getElementById('chk-cash').checked)    scrapers.push('cash_buyer');
+      if (document.getElementById('chk-memphis').checked) scrapers.push('memphis');
+
+      if (!scrapers.length) {
+        showRunStatus('error', 'Select at least one scraper.', '');
+        return;
+      }
+
+      setRunLoading(true);
+      runStatus.className = 'status-banner';
+      if (pollInterval) clearInterval(pollInterval);
+
+      try {
+        const res  = await fetch('/run', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ scrapers }),
+        });
+        const json = await res.json();
+
+        if (json.status !== 'ok' || !json.triggered.length) {
+          setRunLoading(false);
+          showRunStatus('error', 'Could not start the run.', json.errors?.join(' · ') || 'Please try again.');
+          return;
+        }
+
+        // Show running state immediately, then poll for updates
+        scrapers.forEach(s => setChip(s === 'cash_buyer' ? 'cash' : 'memphis', 'running', 'Running…'));
+        pollInterval = setInterval(pollStatus, 12000);
+        setTimeout(pollStatus, 3000);   // first check after 3s
+
+      } catch {
+        setRunLoading(false);
+        showRunStatus('error', 'Could not reach the server.', 'Check your internet connection and try again.');
+      }
+    });
+
+    /* ─── Load current status on page open ─────────────────────────── */
+    (async () => {
+      try {
+        const res  = await fetch('/status');
+        const data = await res.json();
+        applyStatus('cash',    data.cash_buyer);
+        applyStatus('memphis', data.memphis);
+      } catch { /* no status available yet */ }
+    })();
+  </script>
+
+</body>
+</html>

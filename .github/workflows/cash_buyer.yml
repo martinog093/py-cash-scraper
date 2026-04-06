@@ -2,6 +2,11 @@ name: Cash Buyer Scraper
 
 on:
   workflow_dispatch:   # always available for manual runs
+    inputs:
+      shelby_zips:
+        description: 'Shelby County ZIP codes (comma-separated; leave blank for all 41)'
+        required: false
+        default: ''
   # schedule:
   #   - cron: '0 8 * * 0'   # Sundays 8:00 AM UTC (3:00 AM EST) — set schedule with Kash
 
@@ -35,7 +40,13 @@ jobs:
           EMAIL_PASSWORD:  ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         working-directory: "Cash Buyer Scraper"
-        run: xvfb-run -a python main.py --no-sheets
+        run: |
+          ZIPS="${{ inputs.shelby_zips }}"
+          if [ -n "$ZIPS" ]; then
+            xvfb-run -a python main.py --no-sheets --zips "$ZIPS"
+          else
+            xvfb-run -a python main.py --no-sheets
+          fi
 
       - name: Persist buyer history DB
         working-directory: "Cash Buyer Scraper"

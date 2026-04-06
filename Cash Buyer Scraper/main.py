@@ -56,6 +56,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Cash Buyer Scraper")
     parser.add_argument("--days", type=int, default=7, help="Days back to scrape (default: 7)")
     parser.add_argument("--zip", dest="zip_code", default=None, help="Limit to one ZIP code")
+    parser.add_argument("--zips", dest="zip_codes", default=None, help="Comma-separated Shelby ZIP codes (default: all)")
     parser.add_argument("--no-email", action="store_true", help="Skip email delivery")
     parser.add_argument("--no-sheets", action="store_true", help="Skip Google Sheets upload")
     args = parser.parse_args()
@@ -72,7 +73,8 @@ def main() -> None:
         from src.scrapers.shelby import scrape_shelby
         from src.cash_filter import filter_cash_sales_shelby
 
-        raw_shelby = scrape_shelby(days=args.days, zip_code=args.zip_code)
+        zip_list = [z.strip() for z in args.zip_codes.split(",") if z.strip()] if args.zip_codes else None
+        raw_shelby = scrape_shelby(days=args.days, zip_codes=zip_list, zip_code=args.zip_code)
         logger.info("Shelby: %d raw deed records", len(raw_shelby))
 
         cash_shelby = filter_cash_sales_shelby(raw_shelby)

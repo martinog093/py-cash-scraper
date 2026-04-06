@@ -46,21 +46,28 @@ HEADERS = {
 
 def scrape_shelby(
     days: int = 7,
+    zip_codes: list[str] | None = None,
     zip_code: str | None = None,
 ) -> list[dict]:
     """
     Scrape Warranty Deed and Quit Claim filings from Shelby County.
 
     Args:
-        days:     How many days back to search (default 7 for weekly run).
-        zip_code: If provided, only scrape this ZIP instead of the full list.
+        days:      How many days back to search (default 7 for weekly run).
+        zip_codes: If provided, only scrape these ZIPs instead of the full list.
+        zip_code:  Legacy single-ZIP parameter; ignored if zip_codes is set.
 
     Returns list of raw deed record dicts (not yet cash-filtered).
     """
     end_date = date.today()
     start_date = end_date - timedelta(days=days)
 
-    zips_to_run = [zip_code] if zip_code else SHELBY_ZIPS
+    if zip_codes:
+        zips_to_run = zip_codes
+    elif zip_code:
+        zips_to_run = [zip_code]
+    else:
+        zips_to_run = SHELBY_ZIPS
     logger.info(
         "Shelby County: scraping %d ZIP(s) from %s to %s",
         len(zips_to_run), start_date, end_date,

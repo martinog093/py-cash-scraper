@@ -371,6 +371,109 @@
       color: var(--text-sec);
       text-align: center;
     }
+
+    /* ── ZIP selector ─────────────────────────────────────────────────── */
+    .zip-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      margin-top: .35rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .2rem .55rem;
+      font-size: .75rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text-sec);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .zip-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .zip-toggle .arrow { font-size: .65rem; transition: transform .2s; }
+    .zip-toggle.open .arrow { transform: rotate(180deg); }
+
+    .zip-panel {
+      margin-top: .75rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .zip-controls {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem .75rem;
+      background: var(--surface-sub);
+      border-bottom: 1px solid var(--border);
+    }
+    .zip-search {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .3rem .6rem;
+      font-size: .8125rem;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .zip-search::placeholder { color: var(--text-hint); }
+    .zip-search:focus { border-color: var(--border-focus); }
+    .zip-ctrl-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .25rem .55rem;
+      font-size: .75rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text-sec);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color .15s, color .15s;
+    }
+    .zip-ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .zip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: .5rem .75rem;
+      background: var(--surface);
+    }
+    .zip-item {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .2rem .15rem;
+    }
+    .zip-item input[type="checkbox"] {
+      width: 13px; height: 13px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .zip-item label {
+      font-size: .775rem;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+    .zip-item.hidden { display: none; }
+
+    .zip-count {
+      font-size: .75rem;
+      color: var(--text-sec);
+      padding: .3rem .75rem .45rem;
+      background: var(--surface-sub);
+      border-top: 1px solid var(--border);
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -462,17 +565,32 @@
       <div class="section-fields">
 
         <!-- Cash Buyer -->
-        <div class="scraper-row">
-          <label class="scraper-check" for="chk-cash">
-            <input type="checkbox" id="chk-cash" checked />
-            <div>
-              <div class="scraper-name">Cash Buyer</div>
-              <div class="scraper-sub">Shelby County TN &amp; Bergen County NJ</div>
+        <div>
+          <div class="scraper-row">
+            <label class="scraper-check" for="chk-cash">
+              <input type="checkbox" id="chk-cash" checked />
+              <div>
+                <div class="scraper-name">Cash Buyer</div>
+                <div class="scraper-sub">Shelby County TN &amp; Bergen County NJ</div>
+              </div>
+            </label>
+            <div class="chip idle" id="chip-cash">
+              <span class="chip-dot"></span>
+              <span id="chip-cash-text">Never run</span>
             </div>
-          </label>
-          <div class="chip idle" id="chip-cash">
-            <span class="chip-dot"></span>
-            <span id="chip-cash-text">Never run</span>
+          </div>
+          <button type="button" class="zip-toggle" id="zip-toggle">
+            Shelby ZIPs: <span id="zip-toggle-label">All 41</span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="zip-panel" id="zip-panel" hidden>
+            <div class="zip-controls">
+              <input type="text" class="zip-search" id="zip-search" placeholder="Search ZIPs…" />
+              <button type="button" class="zip-ctrl-btn" id="zip-all-btn">All</button>
+              <button type="button" class="zip-ctrl-btn" id="zip-none-btn">None</button>
+            </div>
+            <div class="zip-grid" id="zip-grid"></div>
+            <div class="zip-count" id="zip-count">41 of 41 selected</div>
           </div>
         </div>
 
@@ -512,6 +630,68 @@
   </div>
 
   <script>
+    /* ─── ZIP selector ──────────────────────────────────────────────── */
+    const SHELBY_ZIPS = [
+      "38002","38016","38017","38018","38028","38053","38054",
+      "38101","38103","38104","38105","38106","38107","38108",
+      "38109","38111","38112","38113","38114","38115","38116",
+      "38117","38118","38119","38120","38122","38125","38126",
+      "38127","38128","38130","38131","38132","38133","38134",
+      "38135","38136","38137","38138","38139","38141",
+    ];
+
+    const zipGrid    = document.getElementById('zip-grid');
+    const zipCount   = document.getElementById('zip-count');
+    const zipToggle  = document.getElementById('zip-toggle');
+    const zipPanel   = document.getElementById('zip-panel');
+    const zipLabel   = document.getElementById('zip-toggle-label');
+    const zipSearch  = document.getElementById('zip-search');
+
+    // Build checkboxes
+    SHELBY_ZIPS.forEach(z => {
+      const item = document.createElement('div');
+      item.className = 'zip-item';
+      item.dataset.zip = z;
+      item.innerHTML = `<input type="checkbox" id="zc-${z}" checked /><label for="zc-${z}">${z}</label>`;
+      zipGrid.appendChild(item);
+    });
+
+    function updateZipCount() {
+      const checked = zipGrid.querySelectorAll('input:checked').length;
+      const total   = SHELBY_ZIPS.length;
+      zipCount.textContent = `${checked} of ${total} selected`;
+      zipLabel.textContent = checked === total ? `All ${total}` : `${checked} of ${total}`;
+    }
+
+    function getSelectedZips() {
+      const checked = [...zipGrid.querySelectorAll('input:checked')].map(cb => cb.id.replace('zc-', ''));
+      return checked.length === SHELBY_ZIPS.length ? null : checked;   // null = all (don't send)
+    }
+
+    zipGrid.addEventListener('change', updateZipCount);
+
+    document.getElementById('zip-all-btn').addEventListener('click', () => {
+      zipGrid.querySelectorAll('input').forEach(cb => cb.checked = true);
+      updateZipCount();
+    });
+    document.getElementById('zip-none-btn').addEventListener('click', () => {
+      zipGrid.querySelectorAll('input').forEach(cb => cb.checked = false);
+      updateZipCount();
+    });
+
+    zipSearch.addEventListener('input', () => {
+      const q = zipSearch.value.trim();
+      zipGrid.querySelectorAll('.zip-item').forEach(item => {
+        item.classList.toggle('hidden', q && !item.dataset.zip.includes(q));
+      });
+    });
+
+    zipToggle.addEventListener('click', () => {
+      const open = zipPanel.hidden;
+      zipPanel.hidden = !open;
+      zipToggle.classList.toggle('open', open);
+    });
+
     /* ─── Save credentials ──────────────────────────────────────────── */
     const saveBtn    = document.getElementById('save-btn');
     const saveSpin   = document.getElementById('save-spin');
@@ -610,6 +790,9 @@
         if (run.conclusion === 'success') {
           setChip(key, 'ok', 'Done · ' + when);
           return 'done';
+        } else if (run.conclusion === 'cancelled') {
+          setChip(key, 'idle', 'Cancelled · ' + when);
+          return 'cancelled';
         } else {
           setChip(key, 'fail', 'Failed · ' + when);
           return 'failed';
@@ -651,10 +834,14 @@
       if (pollInterval) clearInterval(pollInterval);
 
       try {
+        const selectedZips = getSelectedZips();   // null = all, array = subset
+        const payload = { scrapers };
+        if (selectedZips !== null) payload.zips = selectedZips;
+
         const res  = await fetch('/run', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ scrapers }),
+          body:    JSON.stringify(payload),
         });
         const json = await res.json();
 
@@ -680,8 +867,15 @@
       try {
         const res  = await fetch('/status');
         const data = await res.json();
-        applyStatus('cash',    data.cash_buyer);
-        applyStatus('memphis', data.memphis);
+        const cashState    = applyStatus('cash',    data.cash_buyer);
+        const memphisState = applyStatus('memphis', data.memphis);
+
+        // If something is already running, start polling so the chip updates
+        if (cashState === 'running' || memphisState === 'running') {
+          setRunLoading(true);
+          pollInterval = setInterval(pollStatus, 12000);
+          setTimeout(pollStatus, 3000);
+        }
       } catch { /* no status available yet */ }
     })();
   </script>

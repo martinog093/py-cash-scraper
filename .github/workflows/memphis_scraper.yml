@@ -2,6 +2,15 @@ name: Memphis Daily News Scraper
 
 on:
   workflow_dispatch:   # always available for manual runs
+    inputs:
+      start_date:
+        description: Start date YYYY-MM-DD (blank = 7 days ago)
+        required: false
+        default: ""
+      end_date:
+        description: End date YYYY-MM-DD (blank = today)
+        required: false
+        default: ""
   # schedule:
   #   - cron: '0 9 * * 1'   # Mondays 9:00 AM UTC (4:00 AM EST) — set schedule with Kash
 
@@ -32,4 +41,11 @@ jobs:
           MDN_USERNAME: ${{ secrets.MDN_USERNAME }}
           MDN_PASSWORD: ${{ secrets.MDN_PASSWORD }}
         working-directory: "Scraping job/MILESTONE 1 memphis-scraper"
-        run: xvfb-run -a python main.py
+        run: |
+          START="${{ inputs.start_date }}"
+          END="${{ inputs.end_date }}"
+          if [ -n "$START" ] && [ -n "$END" ]; then
+            xvfb-run -a python main.py "$START" "$END"
+          else
+            xvfb-run -a python main.py
+          fi

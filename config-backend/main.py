@@ -108,6 +108,9 @@ async def save(
 class RunRequest(BaseModel):
     scrapers: list[str]
     zips: list[str] | None = None   # Shelby ZIP filter; None means all 41
+    start_date: str | None = None
+    end_date: str | None = None
+    days: int | None = None
 
 
 @app.post("/run")
@@ -127,6 +130,11 @@ async def run_scrapers(req: RunRequest):
                 dispatch_inputs: dict[str, str] = {}
                 if scraper == "cash_buyer" and req.zips:
                     dispatch_inputs["shelby_zips"] = ",".join(req.zips)
+                if scraper == "cash_buyer" and req.days:
+                    dispatch_inputs["days"] = str(req.days)
+                if scraper == "memphis" and req.start_date and req.end_date:
+                    dispatch_inputs["start_date"] = req.start_date
+                    dispatch_inputs["end_date"] = req.end_date
 
                 resp = await client.post(
                     f"{GITHUB_BASE}/actions/workflows/{workflow_file}/dispatches",

@@ -7,6 +7,10 @@ on:
         description: 'Shelby County ZIP codes (comma-separated; leave blank for all 41)'
         required: false
         default: ''
+      days:
+        description: Number of days back to scrape (default 7)
+        required: false
+        default: "7"
   # schedule:
   #   - cron: '0 8 * * 0'   # Sundays 8:00 AM UTC (3:00 AM EST) — set schedule with Kash
 
@@ -42,11 +46,11 @@ jobs:
         working-directory: "Cash Buyer Scraper"
         run: |
           ZIPS="${{ inputs.shelby_zips }}"
-          if [ -n "$ZIPS" ]; then
-            xvfb-run -a python main.py --no-sheets --zips "$ZIPS"
-          else
-            xvfb-run -a python main.py --no-sheets
-          fi
+          DAYS="${{ inputs.days }}"
+          CMD="xvfb-run -a python main.py --no-sheets"
+          [ -n "$ZIPS" ] && CMD="$CMD --zips $ZIPS"
+          [ -n "$DAYS" ] && CMD="$CMD --days $DAYS"
+          eval $CMD
 
       - name: Persist buyer history DB
         working-directory: "Cash Buyer Scraper"

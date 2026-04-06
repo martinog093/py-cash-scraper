@@ -3,882 +3,820 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scraper Settings</title>
+  <title>LeadGen Platform — Kash</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: "class" }</script>
   <style>
-    /* ── Token system ─────────────────────────────────────────────────── */
-    :root {
-      --ground:        #F4F5F2;
-      --surface:       #FFFFFF;
-      --surface-sub:   #F0F2EF;
-      --border:        #D8DDD9;
-      --border-focus:  #0C6E52;
-      --text:          #192520;
-      --text-sec:      #5C6E68;
-      --text-hint:     #8A9D96;
-      --accent:        #0C6E52;
-      --accent-dim:    #E1F2EC;
-      --accent-hover:  #0A5C44;
-      --success:       #0F7A4A;
-      --success-bg:    #E2F5EC;
-      --error:         #B02A2A;
-      --error-bg:      #FBECEC;
-      --warn:          #92580A;
-      --warn-bg:       #FEF3E2;
-      --callout-bg:    #EDF5F1;
-      --callout-border:#A8CCBE;
-      --chip-run-bg:   #FEF3E2;
-      --chip-run-text: #92580A;
-      --chip-ok-bg:    #E2F5EC;
-      --chip-ok-text:  #0F7A4A;
-      --chip-err-bg:   #FBECEC;
-      --chip-err-text: #B02A2A;
-      --chip-idle-bg:  #F0F2EF;
-      --chip-idle-text:#5C6E68;
-      --shadow-md:     0 2px 8px rgba(20,40,30,.09), 0 1px 2px rgba(20,40,30,.06);
-      --radius:        9px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --ground:        #0F1A16;
-        --surface:       #182420;
-        --surface-sub:   #111D19;
-        --border:        #243630;
-        --border-focus:  #28C390;
-        --text:          #DDE9E3;
-        --text-sec:      #7A9990;
-        --text-hint:     #4D6860;
-        --accent:        #28C390;
-        --accent-dim:    #0A2E23;
-        --accent-hover:  #33D4A0;
-        --success:       #28C390;
-        --success-bg:    #092918;
-        --error:         #E07070;
-        --error-bg:      #2A0C0C;
-        --warn:          #FBB040;
-        --warn-bg:       #2A1A00;
-        --callout-bg:    #0E221C;
-        --callout-border:#2A4D3E;
-        --chip-run-bg:   #2A1A00;
-        --chip-run-text: #FBB040;
-        --chip-ok-bg:    #092918;
-        --chip-ok-text:  #28C390;
-        --chip-err-bg:   #2A0C0C;
-        --chip-err-text: #E07070;
-        --chip-idle-bg:  #1A2820;
-        --chip-idle-text:#7A9990;
-        --shadow-md:     0 2px 8px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
-      }
-    }
-    :root[data-theme="light"] {
-      --ground:        #F4F5F2;
-      --surface:       #FFFFFF;
-      --surface-sub:   #F0F2EF;
-      --border:        #D8DDD9;
-      --border-focus:  #0C6E52;
-      --text:          #192520;
-      --text-sec:      #5C6E68;
-      --text-hint:     #8A9D96;
-      --accent:        #0C6E52;
-      --accent-dim:    #E1F2EC;
-      --accent-hover:  #0A5C44;
-      --success:       #0F7A4A;
-      --success-bg:    #E2F5EC;
-      --error:         #B02A2A;
-      --error-bg:      #FBECEC;
-      --warn:          #92580A;
-      --warn-bg:       #FEF3E2;
-      --callout-bg:    #EDF5F1;
-      --callout-border:#A8CCBE;
-      --chip-run-bg:   #FEF3E2;
-      --chip-run-text: #92580A;
-      --chip-ok-bg:    #E2F5EC;
-      --chip-ok-text:  #0F7A4A;
-      --chip-err-bg:   #FBECEC;
-      --chip-err-text: #B02A2A;
-      --chip-idle-bg:  #F0F2EF;
-      --chip-idle-text:#5C6E68;
-      --shadow-md:     0 2px 8px rgba(20,40,30,.09), 0 1px 2px rgba(20,40,30,.06);
-    }
-    :root[data-theme="dark"] {
-      --ground:        #0F1A16;
-      --surface:       #182420;
-      --surface-sub:   #111D19;
-      --border:        #243630;
-      --border-focus:  #28C390;
-      --text:          #DDE9E3;
-      --text-sec:      #7A9990;
-      --text-hint:     #4D6860;
-      --accent:        #28C390;
-      --accent-dim:    #0A2E23;
-      --accent-hover:  #33D4A0;
-      --success:       #28C390;
-      --success-bg:    #092918;
-      --error:         #E07070;
-      --error-bg:      #2A0C0C;
-      --warn:          #FBB040;
-      --warn-bg:       #2A1A00;
-      --callout-bg:    #0E221C;
-      --callout-border:#2A4D3E;
-      --chip-run-bg:   #2A1A00;
-      --chip-run-text: #FBB040;
-      --chip-ok-bg:    #092918;
-      --chip-ok-text:  #28C390;
-      --chip-err-bg:   #2A0C0C;
-      --chip-err-text: #E07070;
-      --chip-idle-bg:  #1A2820;
-      --chip-idle-text:#7A9990;
-      --shadow-md:     0 2px 8px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
-    }
+    /* ── Keyframes ───────────────────────────────────────────── */
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes pulsedot { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-    /* ── Reset ────────────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                   'Helvetica Neue', Arial, sans-serif;
-      background: var(--ground);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 3rem 1rem 5rem;
-      font-size: 15px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── Page header ──────────────────────────────────────────────────── */
-    .page-header { width: 100%; max-width: 440px; margin-bottom: 1.75rem; }
-    .page-header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -.025em;
-      color: var(--text);
-      margin-bottom: .25rem;
-      text-wrap: balance;
-    }
-    .page-header p { font-size: .875rem; color: var(--text-sec); }
-
-    /* ── Form card ────────────────────────────────────────────────────── */
-    .card {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-    }
-
-    /* ── Sections ─────────────────────────────────────────────────────── */
-    .section { background: var(--surface); }
-
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: .55rem;
-      padding: .85rem 1.25rem .7rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .section-label-bar {
-      width: 2.5px;
-      height: 13px;
-      border-radius: 2px;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    .section-label-text {
-      font-size: .6875rem;
-      font-weight: 600;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--text-sec);
-    }
-
-    .section-fields {
-      padding: 1.125rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.125rem;
-    }
-
-    /* ── Fields ───────────────────────────────────────────────────────── */
-    .field { display: flex; flex-direction: column; gap: .35rem; }
-    .field label { font-size: .8125rem; font-weight: 500; color: var(--text); }
-    .field input {
-      background: var(--surface-sub);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: .55rem .8rem;
-      font-size: .9375rem;
-      font-family: inherit;
-      color: var(--text);
-      width: 100%;
-      outline: none;
-      transition: border-color .15s, box-shadow .15s, background .15s;
-    }
-    .field input[type="password"] {
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
-      letter-spacing: .1em;
-    }
-    .field input::placeholder { color: var(--text-hint); letter-spacing: 0; }
-    .field input:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px var(--accent-dim);
-      background: var(--surface);
-    }
-
-    /* ── App password callout ─────────────────────────────────────────── */
-    .callout {
-      background: var(--callout-bg);
-      border: 1px solid var(--callout-border);
-      border-radius: 6px;
-      padding: .65rem .85rem;
-      font-size: .8rem;
-      color: var(--text-sec);
-      line-height: 1.55;
-    }
-    .callout strong { color: var(--text); font-weight: 600; }
-    .callout a { color: var(--accent); text-decoration: none; font-weight: 500; }
-    .callout a:hover { text-decoration: underline; }
-
-    /* ── Footer / save ────────────────────────────────────────────────── */
-    .form-footer {
-      background: var(--surface);
-      padding: 1.125rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: .85rem;
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: .7rem 1.25rem;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: .9375rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .5rem;
-      letter-spacing: -.01em;
-      transition: background .15s, transform .1s, box-shadow .15s;
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: var(--accent-hover);
-      box-shadow: 0 2px 6px rgba(12,110,82,.28);
-    }
-    .btn-primary:active:not(:disabled) { transform: scale(.98); }
-    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
-    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .spin {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.35);
-      border-top-color: #fff;
-      border-radius: 50%;
+    /* ── Spinner ─────────────────────────────────────────────── */
+    .spin-el {
+      width:16px; height:16px;
+      border:2px solid rgba(255,255,255,.3);
+      border-top-color:#fff;
+      border-radius:50%;
       animation: spin .65s linear infinite;
-      display: none;
-      flex-shrink: 0;
+      flex-shrink:0;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .spin { animation: none; opacity: .6; } }
-
-    /* ── Status banners ───────────────────────────────────────────────── */
-    .status-banner {
-      display: none;
-      border-radius: 6px;
-      padding: .7rem .9rem;
-      font-size: .875rem;
-      line-height: 1.45;
-      gap: .55rem;
-      align-items: flex-start;
-    }
-    .status-banner.success { display: flex; background: var(--success-bg); color: var(--success); }
-    .status-banner.error   { display: flex; background: var(--error-bg);   color: var(--error);   }
-    .status-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.45; font-style: normal; }
-    .status-text { font-weight: 500; }
-    .status-sub  { font-weight: 400; opacity: .85; font-size: .8125rem; }
-
-    /* ── Run scrapers section ─────────────────────────────────────────── */
-    .scraper-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .75rem;
-    }
-    .scraper-check {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      cursor: pointer;
-      user-select: none;
-    }
-    .scraper-check input[type="checkbox"] {
-      width: 16px; height: 16px;
-      accent-color: var(--accent);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .scraper-name  { font-size: .875rem; font-weight: 500; color: var(--text); }
-    .scraper-sub   { font-size: .75rem; color: var(--text-sec); margin-top: .05rem; }
-
-    /* status chip */
-    .chip {
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      padding: .2rem .55rem;
-      border-radius: 99px;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-      flex-shrink: 0;
-    }
-    .chip.idle    { background: var(--chip-idle-bg); color: var(--chip-idle-text); }
-    .chip.running { background: var(--chip-run-bg);  color: var(--chip-run-text);  }
-    .chip.ok      { background: var(--chip-ok-bg);   color: var(--chip-ok-text);   }
-    .chip.fail    { background: var(--chip-err-bg);  color: var(--chip-err-text);  }
-
-    .chip-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-      flex-shrink: 0;
-    }
-    .chip-dot.pulse {
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
+    @media (prefers-reduced-motion:reduce) {
+      .spin-el { animation:none; opacity:.6; }
+      .pulsing  { animation:none !important; }
     }
 
-    .run-note {
-      font-size: .8rem;
-      color: var(--text-sec);
-      text-align: center;
+    /* ── Chip colour states ──────────────────────────────────── */
+    .chip-base {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:.68rem; font-weight:700;
+      letter-spacing:.06em; text-transform:uppercase;
+      padding:.2rem .6rem; border-radius:9999px;
+      white-space:nowrap; flex-shrink:0;
     }
+    .chip-idle      { background:#E8EDE9; color:#5A7265; }
+    .chip-running   { background:#FEF3C7; color:#92400E; }
+    .chip-ok        { background:#D1FAE5; color:#065F46; }
+    .chip-fail      { background:#FEE2E2; color:#991B1B; }
+    .chip-cancelled { background:#E8EDE9; color:#5A7265; }
 
-    /* ── ZIP selector ─────────────────────────────────────────────────── */
-    .zip-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      margin-top: .35rem;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: .2rem .55rem;
-      font-size: .75rem;
-      font-weight: 500;
-      font-family: inherit;
-      color: var(--text-sec);
-      cursor: pointer;
-      transition: border-color .15s, color .15s;
-    }
-    .zip-toggle:hover { border-color: var(--accent); color: var(--accent); }
-    .zip-toggle .arrow { font-size: .65rem; transition: transform .2s; }
-    .zip-toggle.open .arrow { transform: rotate(180deg); }
+    .html.dark .chip-idle,
+    :root.dark .chip-idle,
+    html.dark .chip-idle      { background:#1C2B22; color:#7BA18E; }
+    html.dark .chip-running   { background:#2A1A00; color:#FBB040; }
+    html.dark .chip-ok        { background:#052A17; color:#34D399; }
+    html.dark .chip-fail      { background:#2A0C0C; color:#F87171; }
+    html.dark .chip-cancelled { background:#1C2B22; color:#7BA18E; }
 
-    .zip-panel {
-      margin-top: .75rem;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      overflow: hidden;
-    }
-    .zip-controls {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .5rem .75rem;
-      background: var(--surface-sub);
-      border-bottom: 1px solid var(--border);
-    }
-    .zip-search {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: .3rem .6rem;
-      font-size: .8125rem;
-      font-family: inherit;
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s;
-    }
-    .zip-search::placeholder { color: var(--text-hint); }
-    .zip-search:focus { border-color: var(--border-focus); }
-    .zip-ctrl-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: .25rem .55rem;
-      font-size: .75rem;
-      font-weight: 500;
-      font-family: inherit;
-      color: var(--text-sec);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: border-color .15s, color .15s;
-    }
-    .zip-ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .chip-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+    .pulsing  { animation: pulsedot 1.4s ease-in-out infinite; }
 
-    .zip-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      max-height: 180px;
-      overflow-y: auto;
-      padding: .5rem .75rem;
-      background: var(--surface);
-    }
-    .zip-item {
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-      padding: .2rem .15rem;
-    }
-    .zip-item input[type="checkbox"] {
-      width: 13px; height: 13px;
-      accent-color: var(--accent);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .zip-item label {
-      font-size: .775rem;
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      color: var(--text);
-      cursor: pointer;
-      user-select: none;
-    }
-    .zip-item.hidden { display: none; }
+    /* ── Status banners ──────────────────────────────────────── */
+    .bnr-success { background:#ECFDF5; color:#065F46; border:1px solid #A7F3D0; }
+    .bnr-error   { background:#FEF2F2; color:#991B1B; border:1px solid #FECACA; }
+    html.dark .bnr-success { background:rgba(5,46,22,.45); color:#34D399; border-color:rgba(52,211,153,.2); }
+    html.dark .bnr-error   { background:rgba(69,10,10,.45); color:#F87171; border-color:rgba(248,113,113,.2); }
 
-    .zip-count {
-      font-size: .75rem;
-      color: var(--text-sec);
-      padding: .3rem .75rem .45rem;
-      background: var(--surface-sub);
-      border-top: 1px solid var(--border);
-      text-align: right;
-    }
+    /* ── Scrollbar ───────────────────────────────────────────── */
+    .zip-scroll { max-height:192px; overflow-y:auto; }
+    .zip-scroll::-webkit-scrollbar { width:4px; }
+    .zip-scroll::-webkit-scrollbar-track { background:transparent; }
+    .zip-scroll::-webkit-scrollbar-thumb { background:#9CA3AF; border-radius:2px; }
   </style>
 </head>
-<body>
+<body class="min-h-screen bg-[#F6F8F7] dark:bg-[#0d1612] text-gray-900 dark:text-gray-100 antialiased">
 
-  <header class="page-header">
-    <h1>Scraper Settings</h1>
-    <p>Fill in your details and click Save — everything is stored securely.</p>
-  </header>
-
-  <!-- ── Credentials card ──────────────────────────────────────────────── -->
-  <div class="card" id="creds-card">
-
-    <!-- Email delivery -->
-    <div class="section">
-      <div class="section-label">
-        <span class="section-label-bar"></span>
-        <span class="section-label-text">Email delivery</span>
+<!-- ═══════════════════════════════════════════════════════════
+     WELCOME MODAL
+════════════════════════════════════════════════════════════ -->
+<div id="welcome-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden">
+    <!-- Header -->
+    <div class="px-8 pt-8 pb-6 text-center border-b border-gray-100 dark:border-gray-700">
+      <div class="text-4xl mb-3 select-none">🌿</div>
+      <p class="text-xs font-semibold tracking-widest uppercase text-emerald-600 dark:text-emerald-400 mb-2">LeadGen Platform</p>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2" style="text-wrap:balance">Welcome back, Kash!</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400">Your automated lead generation platform. Here is how it works.</p>
+    </div>
+    <!-- Steps -->
+    <div class="flex flex-col md:flex-row gap-0 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700 px-0">
+      <div class="flex-1 px-6 py-5">
+        <div class="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center mb-3 select-none">1</div>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1.5">Save Your Credentials</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Enter your email, Gmail App Password, and Memphis Daily News login. Credentials are encrypted end-to-end — not even the developer can access them.</p>
       </div>
-      <div class="section-fields">
-
-        <div class="field">
-          <label for="email">Your email address</label>
-          <input type="email" id="email" name="email"
-                 placeholder="kash@gmail.com" autocomplete="email" />
-        </div>
-
-        <div class="field">
-          <label for="app_password">Gmail App Password</label>
-          <input type="password" id="app_password" name="app_password"
-                 placeholder="xxxx xxxx xxxx xxxx" autocomplete="off" />
-          <div class="callout">
-            <strong>Not your regular Gmail password.</strong>
-            Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a>,
-            create an app password under "Mail", and paste the 16-character code here.
-          </div>
-        </div>
-
+      <div class="flex-1 px-6 py-5">
+        <div class="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center mb-3 select-none">2</div>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1.5">Choose Your Date Range</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Pick the start and end dates for this scraping run. The date window applies to all scrapers in the run.</p>
+      </div>
+      <div class="flex-1 px-6 py-5">
+        <div class="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center mb-3 select-none">3</div>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1.5">Select and Launch</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Choose which scrapers to run — Cash Buyer (Shelby County and Bergen NJ) or Memphis Daily News filings. Filter by ZIP codes if needed.</p>
       </div>
     </div>
-
-    <!-- Memphis Daily News -->
-    <div class="section">
-      <div class="section-label">
-        <span class="section-label-bar"></span>
-        <span class="section-label-text">Memphis Daily News login</span>
-      </div>
-      <div class="section-fields">
-
-        <div class="field">
-          <label for="mdn_username">Username</label>
-          <input type="text" id="mdn_username" name="mdn_username"
-                 placeholder="your@email.com" autocomplete="username" />
-        </div>
-
-        <div class="field">
-          <label for="mdn_password">Password</label>
-          <input type="password" id="mdn_password" name="mdn_password"
-                 placeholder="Your MDN password" autocomplete="current-password" />
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Save footer -->
-    <div class="form-footer">
-      <button type="button" class="btn-primary" id="save-btn">
-        <span class="spin" id="save-spin"></span>
-        <span id="save-label">Save Settings</span>
+    <!-- CTA -->
+    <div class="px-8 py-5 border-t border-gray-100 dark:border-gray-700">
+      <button id="modal-start-btn" type="button"
+        class="w-full sm:w-auto sm:min-w-48 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold text-sm py-2.5 px-8 rounded-xl transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2">
+        Get Started
       </button>
-      <div class="status-banner" id="save-status" role="alert" aria-live="polite">
-        <em class="status-icon" id="save-status-icon" aria-hidden="true"></em>
-        <div>
-          <div class="status-text" id="save-status-text"></div>
-          <div class="status-sub"  id="save-status-sub"></div>
-        </div>
-      </div>
     </div>
-
   </div>
+</div>
 
-  <!-- ── Run scrapers card ──────────────────────────────────────────────── -->
-  <div class="card" id="run-card">
+<!-- ═══════════════════════════════════════════════════════════
+     CONFIRMATION MODAL
+════════════════════════════════════════════════════════════ -->
+<div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full shadow-2xl p-6">
+    <h2 class="text-base font-bold text-gray-900 dark:text-white mb-1">Confirm Scraping Run</h2>
+    <p class="text-xs text-gray-400 dark:text-gray-500 mb-4">Review the settings below before launching.</p>
+    <div id="confirm-summary" class="space-y-2 mb-6 text-sm"></div>
+    <div class="flex gap-3">
+      <button id="confirm-cancel" type="button"
+        class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        Cancel
+      </button>
+      <button id="confirm-start" type="button"
+        class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-sm font-semibold transition-all">
+        Confirm and Start
+      </button>
+    </div>
+  </div>
+</div>
 
-    <div class="section">
-      <div class="section-label">
-        <span class="section-label-bar"></span>
-        <span class="section-label-text">Run scrapers</span>
-      </div>
-      <div class="section-fields">
+<!-- ═══════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════ -->
+<nav id="main-nav" class="sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+  <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-2 select-none">
+      <span class="text-lg leading-none">🌿</span>
+      <span class="font-semibold text-sm text-gray-800 dark:text-gray-100 tracking-tight">LeadGen Platform</span>
+    </div>
+    <button id="theme-toggle" type="button" aria-label="Toggle colour scheme"
+      class="w-8 h-8 flex items-center justify-center rounded-lg text-base hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500">
+      <span id="theme-icon">☀️</span>
+    </button>
+  </div>
+</nav>
 
-        <!-- Cash Buyer -->
-        <div>
-          <div class="scraper-row">
-            <label class="scraper-check" for="chk-cash">
-              <input type="checkbox" id="chk-cash" checked />
-              <div>
-                <div class="scraper-name">Cash Buyer</div>
-                <div class="scraper-sub">Shelby County TN &amp; Bergen County NJ</div>
-              </div>
-            </label>
-            <div class="chip idle" id="chip-cash">
-              <span class="chip-dot"></span>
-              <span id="chip-cash-text">Never run</span>
-            </div>
+<!-- ═══════════════════════════════════════════════════════════
+     TAB STRIP
+════════════════════════════════════════════════════════════ -->
+<div class="sticky top-14 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
+  <div class="max-w-3xl mx-auto px-4 flex min-w-max">
+    <button type="button" data-tab="1" id="tab-btn-1"
+      class="tab-btn py-3 px-4 sm:px-6 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors focus-visible:outline-none">
+      1&nbsp; Credentials
+    </button>
+    <button type="button" data-tab="2" id="tab-btn-2"
+      class="tab-btn py-3 px-4 sm:px-6 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors focus-visible:outline-none">
+      2&nbsp; Date Range
+    </button>
+    <button type="button" data-tab="3" id="tab-btn-3"
+      class="tab-btn py-3 px-4 sm:px-6 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors focus-visible:outline-none">
+      3&nbsp; Configure &amp; Run
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════════ -->
+<main class="max-w-3xl mx-auto px-4 py-8">
+
+  <!-- ── TAB 1 — CREDENTIALS ──────────────────────────────── -->
+  <div id="panel-1" class="tab-panel">
+    <div class="max-w-md mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+
+        <!-- Email Delivery -->
+        <div class="px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="inline-block w-[3px] h-[14px] rounded-full bg-emerald-600 dark:bg-emerald-400"></span>
+            <span class="text-[0.65rem] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Email Delivery</span>
           </div>
-          <button type="button" class="zip-toggle" id="zip-toggle">
-            Shelby ZIPs: <span id="zip-toggle-label">All 41</span>
-            <span class="arrow">▾</span>
-          </button>
-          <div class="zip-panel" id="zip-panel" hidden>
-            <div class="zip-controls">
-              <input type="text" class="zip-search" id="zip-search" placeholder="Search ZIPs…" />
-              <button type="button" class="zip-ctrl-btn" id="zip-all-btn">All</button>
-              <button type="button" class="zip-ctrl-btn" id="zip-none-btn">None</button>
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Your email address</label>
+              <input type="email" id="email" name="email" placeholder="kash@gmail.com" autocomplete="email"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
             </div>
-            <div class="zip-grid" id="zip-grid"></div>
-            <div class="zip-count" id="zip-count">41 of 41 selected</div>
+            <div>
+              <label for="app_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Gmail App Password</label>
+              <input type="password" id="app_password" name="app_password" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm font-mono tracking-widest text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
+              <div class="mt-2.5 bg-emerald-50 dark:bg-[#0a2016] border-l-[3px] border-emerald-500 dark:border-emerald-600 rounded-r-lg px-3 py-2.5 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                <strong class="font-semibold text-gray-800 dark:text-gray-200">Not your regular Gmail password.</strong>
+                Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer"
+                  class="text-emerald-600 dark:text-emerald-400 font-medium underline underline-offset-2">myaccount.google.com/apppasswords</a>,
+                create an app password under "Mail", and paste the 16-character code here.
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- Memphis Daily News -->
-        <div class="scraper-row">
-          <label class="scraper-check" for="chk-memphis">
-            <input type="checkbox" id="chk-memphis" checked />
+        <div class="px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="inline-block w-[3px] h-[14px] rounded-full bg-emerald-600 dark:bg-emerald-400"></span>
+            <span class="text-[0.65rem] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Memphis Daily News Login</span>
+          </div>
+          <div class="space-y-4">
             <div>
-              <div class="scraper-name">Memphis Daily News</div>
-              <div class="scraper-sub">Tax Liens · Probate · Divorce filings</div>
+              <label for="mdn_username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Username</label>
+              <input type="text" id="mdn_username" name="mdn_username" placeholder="your@email.com" autocomplete="username"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
             </div>
-          </label>
-          <div class="chip idle" id="chip-memphis">
-            <span class="chip-dot"></span>
-            <span id="chip-memphis-text">Never run</span>
+            <div>
+              <label for="mdn_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
+              <input type="password" id="mdn_password" name="mdn_password" placeholder="Your MDN password" autocomplete="current-password"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm font-mono tracking-widest text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 space-y-3">
+          <button id="save-btn" type="button"
+            class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-[.98] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm py-2.5 rounded-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2">
+            <span id="save-spin" class="spin-el hidden"></span>
+            <span id="save-label">Save Credentials</span>
+          </button>
+          <div id="save-status" class="hidden rounded-lg px-3 py-2.5 text-sm flex items-start gap-2" role="alert" aria-live="polite">
+            <em id="save-status-icon" class="not-italic flex-shrink-0 mt-px font-semibold"></em>
+            <div>
+              <div id="save-status-text" class="font-medium leading-snug"></div>
+              <div id="save-status-sub" class="text-xs mt-0.5 opacity-75"></div>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
-
-    <div class="form-footer">
-      <button type="button" class="btn-primary" id="run-btn">
-        <span class="spin" id="run-spin"></span>
-        <span id="run-label">▶ Run Now</span>
-      </button>
-      <div class="status-banner" id="run-status" role="alert" aria-live="polite">
-        <em class="status-icon" id="run-status-icon" aria-hidden="true"></em>
-        <div>
-          <div class="status-text" id="run-status-text"></div>
-          <div class="status-sub"  id="run-status-sub"></div>
-        </div>
-      </div>
-      <p class="run-note">You'll receive an email when the run completes.</p>
-    </div>
-
   </div>
 
-  <script>
-    /* ─── ZIP selector ──────────────────────────────────────────────── */
-    const SHELBY_ZIPS = [
-      "38002","38016","38017","38018","38028","38053","38054",
-      "38101","38103","38104","38105","38106","38107","38108",
-      "38109","38111","38112","38113","38114","38115","38116",
-      "38117","38118","38119","38120","38122","38125","38126",
-      "38127","38128","38130","38131","38132","38133","38134",
-      "38135","38136","38137","38138","38139","38141",
-    ];
+  <!-- ── TAB 2 — DATE RANGE ────────────────────────────────── -->
+  <div id="panel-2" class="tab-panel hidden">
+    <div class="max-w-md mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-    const zipGrid    = document.getElementById('zip-grid');
-    const zipCount   = document.getElementById('zip-count');
-    const zipToggle  = document.getElementById('zip-toggle');
-    const zipPanel   = document.getElementById('zip-panel');
-    const zipLabel   = document.getElementById('zip-toggle-label');
-    const zipSearch  = document.getElementById('zip-search');
+        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
+          <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Select Date Range</h2>
+          <p class="text-xs text-gray-400 dark:text-gray-500">This window applies to all scrapers in this run.</p>
+        </div>
 
-    // Build checkboxes
-    SHELBY_ZIPS.forEach(z => {
-      const item = document.createElement('div');
-      item.className = 'zip-item';
-      item.dataset.zip = z;
-      item.innerHTML = `<input type="checkbox" id="zc-${z}" checked /><label for="zc-${z}">${z}</label>`;
-      zipGrid.appendChild(item);
+        <div class="px-6 py-5 space-y-4">
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <label for="date-from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">From</label>
+              <input type="date" id="date-from"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
+            </div>
+            <div class="flex-1">
+              <label for="date-to" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">To</label>
+              <input type="date" id="date-to"
+                class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 transition-all" />
+            </div>
+          </div>
+
+          <!-- Live chip -->
+          <div>
+            <span id="date-chip" class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-[#0a2016] text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-medium px-3 py-1.5 rounded-full">
+              📅 <span id="date-chip-text">Scraping 7 days of data</span>
+            </span>
+          </div>
+
+          <p id="date-error" class="hidden text-xs text-red-600 dark:text-red-400"></p>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+          <button id="date-continue-btn" type="button"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[.98] text-white font-semibold text-sm py-2.5 rounded-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2">
+            Save and Continue
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB 3 — CONFIGURE AND RUN ────────────────────────── -->
+  <div id="panel-3" class="tab-panel hidden">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-[3px] h-[14px] rounded-full bg-emerald-600 dark:bg-emerald-400"></span>
+            <span class="text-[0.65rem] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Select Scrapers</span>
+          </div>
+        </div>
+
+        <div class="divide-y divide-gray-100 dark:divide-gray-700">
+
+          <!-- Row 1: Cash Buyer -->
+          <div class="px-6 py-4">
+            <div class="flex items-start justify-between gap-4">
+              <label for="chk-cash" class="flex items-start gap-3 cursor-pointer flex-1">
+                <input type="checkbox" id="chk-cash" checked
+                  class="mt-0.5 w-4 h-4 rounded accent-emerald-600 cursor-pointer flex-shrink-0" />
+                <div>
+                  <div class="text-sm font-semibold text-gray-900 dark:text-white">Cash Buyer Finder</div>
+                  <div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Shelby County TN and Bergen County NJ</div>
+                </div>
+              </label>
+              <div id="chip-cash" class="chip-base chip-idle">
+                <span class="chip-dot"></span>
+                <span id="chip-cash-text">Never run</span>
+              </div>
+            </div>
+
+            <!-- ZIP picker (shown when chk-cash is checked) -->
+            <div id="zip-container" class="mt-3 pl-7">
+              <button type="button" id="zip-toggle"
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none">
+                Shelby ZIPs: <span id="zip-toggle-label">All 41 selected</span>
+                <span id="zip-arrow" class="text-[0.6rem] transition-transform duration-200">▾</span>
+              </button>
+              <div id="zip-panel" class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                <!-- Controls -->
+                <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-200 dark:border-gray-600">
+                  <input type="text" id="zip-search" placeholder="Search ZIPs or neighbourhoods…"
+                    class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2.5 py-1.5 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors" />
+                  <button type="button" id="zip-all-btn"
+                    class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">All</button>
+                  <button type="button" id="zip-none-btn"
+                    class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">None</button>
+                </div>
+                <!-- Grid -->
+                <div id="zip-grid" class="zip-scroll grid grid-cols-2 md:grid-cols-4 bg-white dark:bg-gray-800 p-3 gap-0"></div>
+                <!-- Footer -->
+                <div class="px-3 py-1.5 bg-gray-50 dark:bg-gray-700/60 border-t border-gray-200 dark:border-gray-600 text-right">
+                  <span id="zip-count" class="text-xs text-gray-400 dark:text-gray-500">41 of 41 ZIP codes selected</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Memphis Daily News -->
+          <div class="px-6 py-4">
+            <div class="flex items-start justify-between gap-4">
+              <label for="chk-memphis" class="flex items-start gap-3 cursor-pointer flex-1">
+                <input type="checkbox" id="chk-memphis" checked
+                  class="mt-0.5 w-4 h-4 rounded accent-emerald-600 cursor-pointer flex-shrink-0" />
+                <div>
+                  <div class="text-sm font-semibold text-gray-900 dark:text-white">Memphis Daily News</div>
+                  <div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Tax Liens, Probate, Divorce filings</div>
+                </div>
+              </label>
+              <div id="chip-memphis" class="chip-base chip-idle">
+                <span class="chip-dot"></span>
+                <span id="chip-memphis-text">Never run</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Run footer -->
+        <div class="px-6 py-5 border-t border-gray-100 dark:border-gray-700 space-y-3">
+          <button id="run-btn" type="button"
+            class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-[.98] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 rounded-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2">
+            <span id="run-spin" class="spin-el hidden"></span>
+            <span id="run-label">▶ Run Now</span>
+          </button>
+          <div id="run-status" class="hidden rounded-lg px-3 py-2.5 text-sm flex items-start gap-2" role="alert" aria-live="polite">
+            <em id="run-status-icon" class="not-italic flex-shrink-0 mt-px font-semibold"></em>
+            <div>
+              <div id="run-status-text" class="font-medium leading-snug"></div>
+              <div id="run-status-sub" class="text-xs mt-0.5 opacity-75"></div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 dark:text-gray-500 text-center">You will receive an email when the run completes.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ═══════════════════════════════════════════════════════════
+     THEME
+  ══════════════════════════════════════════════════════════ */
+  const html      = document.documentElement;
+  const themeIcon = document.getElementById('theme-icon');
+
+  function applyTheme(dark) {
+    html.classList.toggle('dark', dark);
+    themeIcon.textContent = dark ? '🌙' : '☀️';
+  }
+  // Default light; honour saved preference
+  applyTheme(localStorage.getItem('theme') === 'dark');
+
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    themeIcon.textContent = isDark ? '🌙' : '☀️';
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     WELCOME MODAL
+  ══════════════════════════════════════════════════════════ */
+  const welcomeModal = document.getElementById('welcome-modal');
+  if (sessionStorage.getItem('modal-dismissed')) {
+    welcomeModal.classList.add('hidden');
+  }
+  document.getElementById('modal-start-btn').addEventListener('click', () => {
+    sessionStorage.setItem('modal-dismissed', '1');
+    welcomeModal.classList.add('hidden');
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     TABS
+  ══════════════════════════════════════════════════════════ */
+  let credentialsSaved = false;
+
+  const ACTIVE_TAB   = ['text-emerald-600', 'dark:text-emerald-400', 'border-emerald-500', 'dark:border-emerald-400'];
+  const INACTIVE_TAB = ['text-gray-500',    'dark:text-gray-400',    'border-transparent'];
+
+  function switchTab(n) {
+    [1, 2, 3].forEach(i => {
+      const btn   = document.getElementById('tab-btn-' + i);
+      const panel = document.getElementById('panel-' + i);
+      const isActive = (i === n);
+      btn.classList.remove(...ACTIVE_TAB, ...INACTIVE_TAB);
+      btn.classList.add(...(isActive ? ACTIVE_TAB : INACTIVE_TAB));
+      panel.classList.toggle('hidden', !isActive);
     });
+  }
 
-    function updateZipCount() {
-      const checked = zipGrid.querySelectorAll('input:checked').length;
-      const total   = SHELBY_ZIPS.length;
-      zipCount.textContent = `${checked} of ${total} selected`;
-      zipLabel.textContent = checked === total ? `All ${total}` : `${checked} of ${total}`;
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(parseInt(btn.dataset.tab, 10)));
+  });
+
+  switchTab(1); // boot on tab 1
+
+  /* ═══════════════════════════════════════════════════════════
+     DATE RANGE
+  ══════════════════════════════════════════════════════════ */
+  const dateFrom     = document.getElementById('date-from');
+  const dateTo       = document.getElementById('date-to');
+  const dateChipText = document.getElementById('date-chip-text');
+  const dateError    = document.getElementById('date-error');
+
+  function toISO(d) { return d.toISOString().slice(0, 10); }
+
+  const todayDate   = new Date();
+  const sevenAgo    = new Date(todayDate); sevenAgo.setDate(sevenAgo.getDate() - 7);
+  const todayStr    = toISO(todayDate);
+
+  dateFrom.value = toISO(sevenAgo);
+  dateTo.value   = todayStr;
+  dateFrom.max   = todayStr;
+  dateTo.max     = todayStr;
+
+  function updateDateChip() {
+    if (!dateFrom.value || !dateTo.value) { dateChipText.textContent = 'Select a range'; return; }
+    const from = new Date(dateFrom.value);
+    const to   = new Date(dateTo.value);
+    if (isNaN(from) || isNaN(to) || from > to) { dateChipText.textContent = 'Invalid range'; return; }
+    const days = Math.ceil((to - from) / (864e5)) + 1;
+    dateChipText.textContent = 'Scraping ' + days + ' day' + (days !== 1 ? 's' : '') + ' of data';
+  }
+
+  dateFrom.addEventListener('change', updateDateChip);
+  dateTo.addEventListener('change',   updateDateChip);
+  updateDateChip();
+
+  document.getElementById('date-continue-btn').addEventListener('click', () => {
+    dateError.classList.add('hidden');
+    if (!dateFrom.value || !dateTo.value) {
+      dateError.textContent = 'Please select both a start and end date.';
+      dateError.classList.remove('hidden'); return;
+    }
+    if (new Date(dateFrom.value) > new Date(dateTo.value)) {
+      dateError.textContent = '"From" must be on or before "To".';
+      dateError.classList.remove('hidden'); return;
+    }
+    if (dateTo.value > todayStr) {
+      dateError.textContent = '"To" date cannot be in the future.';
+      dateError.classList.remove('hidden'); return;
+    }
+    switchTab(3);
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     ZIP SELECTOR
+  ══════════════════════════════════════════════════════════ */
+  const ZIPS = [
+    { zip:"38002", name:"Arlington" },
+    { zip:"38016", name:"Cordova" },
+    { zip:"38017", name:"Collierville" },
+    { zip:"38018", name:"Cordova East" },
+    { zip:"38028", name:"Eads" },
+    { zip:"38053", name:"Millington" },
+    { zip:"38054", name:"Millington South" },
+    { zip:"38101", name:"Downtown Memphis" },
+    { zip:"38103", name:"Downtown / Riverfront" },
+    { zip:"38104", name:"Midtown" },
+    { zip:"38105", name:"Downtown / Medical District" },
+    { zip:"38106", name:"South Memphis" },
+    { zip:"38107", name:"North Memphis" },
+    { zip:"38108", name:"Orange Mound" },
+    { zip:"38109", name:"Whitehaven South" },
+    { zip:"38111", name:"East Memphis" },
+    { zip:"38112", name:"Midtown East" },
+    { zip:"38113", name:"Harbor Town / Industrial" },
+    { zip:"38114", name:"Berclair / Hollywood" },
+    { zip:"38115", name:"Hickory Hill" },
+    { zip:"38116", name:"Whitehaven" },
+    { zip:"38117", name:"East Memphis / Chickasaw Gardens" },
+    { zip:"38118", name:"Oakhaven" },
+    { zip:"38119", name:"East Memphis / Germantown" },
+    { zip:"38120", name:"East Memphis / Quince" },
+    { zip:"38122", name:"Berclair / Sherwood Forest" },
+    { zip:"38125", name:"Southwind" },
+    { zip:"38126", name:"South Memphis / Foote Homes" },
+    { zip:"38127", name:"Raleigh" },
+    { zip:"38128", name:"Raleigh / Bartlett" },
+    { zip:"38130", name:"Memphis PO Boxes" },
+    { zip:"38131", name:"Airport / Nonconnah" },
+    { zip:"38132", name:"Airport Area" },
+    { zip:"38133", name:"Bartlett" },
+    { zip:"38134", name:"Bartlett / Raleigh" },
+    { zip:"38135", name:"Bartlett East" },
+    { zip:"38136", name:"Memphis Gardens" },
+    { zip:"38137", name:"Memphis Farms" },
+    { zip:"38138", name:"Germantown" },
+    { zip:"38139", name:"Germantown East" },
+    { zip:"38141", name:"Southwind / Hickory Hill South" },
+  ];
+
+  const zipGrid   = document.getElementById('zip-grid');
+  const zipCount  = document.getElementById('zip-count');
+  const zipToggle = document.getElementById('zip-toggle');
+  const zipPanel  = document.getElementById('zip-panel');
+  const zipLabel  = document.getElementById('zip-toggle-label');
+  const zipArrow  = document.getElementById('zip-arrow');
+  const zipSearch = document.getElementById('zip-search');
+
+  ZIPS.forEach(({ zip, name }) => {
+    const item = document.createElement('div');
+    item.className = 'flex items-center gap-1.5 py-[3px] px-1 min-w-0';
+    item.dataset.zip  = zip;
+    item.dataset.name = name.toLowerCase();
+    item.innerHTML =
+      `<input type="checkbox" id="zc-${zip}" checked ` +
+      `class="w-3 h-3 rounded flex-shrink-0 cursor-pointer accent-emerald-600" />` +
+      `<label for="zc-${zip}" class="text-[0.7rem] font-mono text-gray-700 dark:text-gray-300 cursor-pointer select-none truncate" ` +
+      `title="${zip} — ${name}">${zip}<span class="text-gray-400 dark:text-gray-500 font-sans not-italic"> — ${name}</span></label>`;
+    zipGrid.appendChild(item);
+  });
+
+  function updateZipCount() {
+    const checked = zipGrid.querySelectorAll('input:checked').length;
+    const total   = ZIPS.length;
+    zipCount.textContent = checked + ' of ' + total + ' ZIP codes selected';
+    zipLabel.textContent = checked === total ? 'All ' + total + ' selected' : checked + ' of ' + total + ' selected';
+  }
+
+  function getSelectedZips() {
+    const checked = [...zipGrid.querySelectorAll('input:checked')].map(cb => cb.id.replace('zc-', ''));
+    return checked.length === ZIPS.length ? null : checked;   // null = all
+  }
+
+  zipGrid.addEventListener('change', updateZipCount);
+
+  document.getElementById('zip-all-btn').addEventListener('click', () => {
+    zipGrid.querySelectorAll('input').forEach(cb => cb.checked = true);
+    updateZipCount();
+  });
+  document.getElementById('zip-none-btn').addEventListener('click', () => {
+    zipGrid.querySelectorAll('input').forEach(cb => cb.checked = false);
+    updateZipCount();
+  });
+
+  zipSearch.addEventListener('input', () => {
+    const q = zipSearch.value.trim().toLowerCase();
+    zipGrid.querySelectorAll('[data-zip]').forEach(item => {
+      const match = !q || item.dataset.zip.includes(q) || item.dataset.name.includes(q);
+      item.style.display = match ? '' : 'none';
+    });
+  });
+
+  zipToggle.addEventListener('click', () => {
+    const isOpen = !zipPanel.classList.contains('hidden');
+    zipPanel.classList.toggle('hidden', isOpen);
+    zipArrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+  });
+
+  document.getElementById('chk-cash').addEventListener('change', function () {
+    document.getElementById('zip-container').style.display = this.checked ? '' : 'none';
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     STATUS BANNER HELPERS
+  ══════════════════════════════════════════════════════════ */
+  function showBanner(containerId, type, text, sub) {
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden', 'bnr-success', 'bnr-error');
+    el.classList.add(type === 'success' ? 'bnr-success' : 'bnr-error');
+    const idBase = containerId.replace('-status', '-status');
+    document.getElementById(idBase + '-icon').textContent = type === 'success' ? '✓' : '✕';
+    document.getElementById(idBase + '-text').textContent = text;
+    document.getElementById(idBase + '-sub').textContent  = sub || '';
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     CREDENTIALS — POST /save  (URLSearchParams)
+  ══════════════════════════════════════════════════════════ */
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    const email   = document.getElementById('email').value.trim();
+    const appPass = document.getElementById('app_password').value.trim();
+    const mdnUser = document.getElementById('mdn_username').value.trim();
+    const mdnPass = document.getElementById('mdn_password').value.trim();
+
+    if (!email || !appPass || !mdnUser || !mdnPass) {
+      const first = ['email', 'app_password', 'mdn_username', 'mdn_password']
+        .find(id => !document.getElementById(id).value.trim());
+      document.getElementById(first).focus();
+      showBanner('save-status', 'error', 'Please fill in all fields.', '');
+      return;
     }
 
-    function getSelectedZips() {
-      const checked = [...zipGrid.querySelectorAll('input:checked')].map(cb => cb.id.replace('zc-', ''));
-      return checked.length === SHELBY_ZIPS.length ? null : checked;   // null = all (don't send)
-    }
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    document.getElementById('save-spin').classList.remove('hidden');
+    document.getElementById('save-label').textContent = 'Saving…';
+    document.getElementById('save-status').classList.add('hidden');
 
-    zipGrid.addEventListener('change', updateZipCount);
+    try {
+      const body = new URLSearchParams({ email, app_password: appPass, mdn_username: mdnUser, mdn_password: mdnPass });
+      const res  = await fetch('/save', { method: 'POST', body });
+      const json = await res.json();
 
-    document.getElementById('zip-all-btn').addEventListener('click', () => {
-      zipGrid.querySelectorAll('input').forEach(cb => cb.checked = true);
-      updateZipCount();
-    });
-    document.getElementById('zip-none-btn').addEventListener('click', () => {
-      zipGrid.querySelectorAll('input').forEach(cb => cb.checked = false);
-      updateZipCount();
-    });
-
-    zipSearch.addEventListener('input', () => {
-      const q = zipSearch.value.trim();
-      zipGrid.querySelectorAll('.zip-item').forEach(item => {
-        item.classList.toggle('hidden', q && !item.dataset.zip.includes(q));
-      });
-    });
-
-    zipToggle.addEventListener('click', () => {
-      const open = zipPanel.hidden;
-      zipPanel.hidden = !open;
-      zipToggle.classList.toggle('open', open);
-    });
-
-    /* ─── Save credentials ──────────────────────────────────────────── */
-    const saveBtn    = document.getElementById('save-btn');
-    const saveSpin   = document.getElementById('save-spin');
-    const saveLabel  = document.getElementById('save-label');
-    const saveStatus = document.getElementById('save-status');
-
-    function setSaveLoading(on) {
-      saveBtn.disabled       = on;
-      saveSpin.style.display = on ? 'block' : 'none';
-      saveLabel.textContent  = on ? 'Saving…' : 'Save Settings';
-    }
-
-    function showSaveStatus(type, text, sub) {
-      saveStatus.className                           = 'status-banner ' + type;
-      document.getElementById('save-status-icon').textContent = type === 'success' ? '✓' : '✕';
-      document.getElementById('save-status-text').textContent = text;
-      document.getElementById('save-status-sub').textContent  = sub || '';
-    }
-
-    saveBtn.addEventListener('click', async () => {
-      const email   = document.getElementById('email').value.trim();
-      const appPass = document.getElementById('app_password').value.trim();
-      const mdnUser = document.getElementById('mdn_username').value.trim();
-      const mdnPass = document.getElementById('mdn_password').value.trim();
-
-      if (!email || !appPass || !mdnUser || !mdnPass) {
-        const first = ['email', 'app_password', 'mdn_username', 'mdn_password']
-          .find(id => !document.getElementById(id).value.trim());
-        document.getElementById(first).focus();
-        showSaveStatus('error', 'Please fill in all fields.', '');
-        return;
+      if (json.status === 'ok') {
+        showBanner('save-status', 'success', 'Credentials saved.', 'Moving to date range…');
+        credentialsSaved = true;
+        setTimeout(() => switchTab(2), 1200);
+      } else {
+        showBanner('save-status', 'error', 'Could not save credentials.', json.message || 'Please try again.');
       }
-
-      setSaveLoading(true);
-      saveStatus.className = 'status-banner';
-
-      try {
-        const body = new URLSearchParams({ email, app_password: appPass, mdn_username: mdnUser, mdn_password: mdnPass });
-        const res  = await fetch('/save', { method: 'POST', body });
-        const json = await res.json();
-
-        if (json.status === 'ok') {
-          showSaveStatus('success', 'All settings saved.', 'Your scraper is configured and ready to run.');
-        } else {
-          showSaveStatus('error', 'Could not save settings.', json.message || 'Please try again.');
-        }
-      } catch {
-        showSaveStatus('error', 'Could not reach the server.', 'Check your internet connection and try again.');
-      } finally {
-        setSaveLoading(false);
-      }
-    });
-
-    /* ─── Run scrapers ──────────────────────────────────────────────── */
-    const runBtn    = document.getElementById('run-btn');
-    const runSpin   = document.getElementById('run-spin');
-    const runLabel  = document.getElementById('run-label');
-    const runStatus = document.getElementById('run-status');
-
-    let pollInterval = null;
-
-    function setRunLoading(on) {
-      runBtn.disabled      = on;
-      runSpin.style.display = on ? 'block' : 'none';
-      runLabel.textContent  = on ? 'Starting…' : '▶ Run Now';
+    } catch {
+      showBanner('save-status', 'error', 'Could not reach the server.', 'Check your internet connection and try again.');
+    } finally {
+      saveBtn.disabled = false;
+      document.getElementById('save-spin').classList.add('hidden');
+      document.getElementById('save-label').textContent = 'Save Credentials';
     }
+  });
 
-    function showRunStatus(type, text, sub) {
-      runStatus.className                           = 'status-banner ' + type;
-      document.getElementById('run-status-icon').textContent = type === 'success' ? '✓' : '✕';
-      document.getElementById('run-status-text').textContent = text;
-      document.getElementById('run-status-sub').textContent  = sub || '';
+  /* ═══════════════════════════════════════════════════════════
+     CHIP + STATUS HELPERS  (preserved from original)
+  ══════════════════════════════════════════════════════════ */
+  function setChip(key, state, label) {
+    const chip    = document.getElementById('chip-' + key);
+    const chipTxt = document.getElementById('chip-' + key + '-text');
+    const dot     = chip.querySelector('.chip-dot');
+    chip.className = 'chip-base chip-' + state;
+    chipTxt.textContent = label;
+    dot.classList.toggle('pulsing', state === 'running');
+  }
+
+  function relativeTime(isoString) {
+    if (!isoString) return '';
+    const diff = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
+    if (diff < 1)  return 'just now';
+    if (diff < 60) return diff + 'm ago';
+    return Math.round(diff / 60) + 'h ago';
+  }
+
+  function applyStatus(key, run) {
+    if (!run) { setChip(key, 'idle', 'Never run'); return 'idle'; }
+    const when = relativeTime(run.created_at);
+    if (run.status === 'completed') {
+      if (run.conclusion === 'success')   { setChip(key, 'ok',        'Done · '      + when); return 'done';      }
+      if (run.conclusion === 'cancelled') { setChip(key, 'cancelled', 'Cancelled · ' + when); return 'cancelled'; }
+      setChip(key, 'fail', 'Failed · ' + when); return 'failed';
     }
+    setChip(key, 'running', 'Running…');
+    return 'running';
+  }
 
-    function setChip(key, state, label) {
-      const chip    = document.getElementById('chip-' + key);
-      const chipTxt = document.getElementById('chip-' + key + '-text');
-      const dot     = chip.querySelector('.chip-dot');
-      chip.className = 'chip ' + state;
-      chipTxt.textContent = label;
-      dot.classList.toggle('pulse', state === 'running');
-    }
+  let pollInterval = null;
 
-    function relativeTime(isoString) {
-      if (!isoString) return '';
-      const diff = Math.round((Date.now() - new Date(isoString).getTime()) / 60000);
-      if (diff < 1)  return 'just now';
-      if (diff < 60) return diff + 'm ago';
-      return Math.round(diff / 60) + 'h ago';
-    }
+  function setRunLoading(on) {
+    const btn = document.getElementById('run-btn');
+    btn.disabled = on;
+    document.getElementById('run-spin').classList.toggle('hidden', !on);
+    document.getElementById('run-label').textContent = on ? 'Starting…' : '▶ Run Now';
+  }
 
-    function applyStatus(key, run) {
-      if (!run) { setChip(key, 'idle', 'Never run'); return 'idle'; }
-      const when = relativeTime(run.created_at);
-      if (run.status === 'completed') {
-        if (run.conclusion === 'success') {
-          setChip(key, 'ok', 'Done · ' + when);
-          return 'done';
-        } else if (run.conclusion === 'cancelled') {
-          setChip(key, 'idle', 'Cancelled · ' + when);
-          return 'cancelled';
-        } else {
-          setChip(key, 'fail', 'Failed · ' + when);
-          return 'failed';
-        }
-      }
-      setChip(key, 'running', 'Running…');
-      return 'running';
-    }
-
-    async function pollStatus() {
-      try {
-        const res  = await fetch('/status');
-        const data = await res.json();
-        const cashState    = applyStatus('cash',    data.cash_buyer);
-        const memphisState = applyStatus('memphis', data.memphis);
-
-        const stillRunning = cashState === 'running' || memphisState === 'running';
-        if (!stillRunning && pollInterval) {
-          clearInterval(pollInterval);
-          pollInterval = null;
-          setRunLoading(false);
-          showRunStatus('success', 'Run complete.', 'Check your email for the report.');
-        }
-      } catch { /* silent — retry next tick */ }
-    }
-
-    runBtn.addEventListener('click', async () => {
-      const scrapers = [];
-      if (document.getElementById('chk-cash').checked)    scrapers.push('cash_buyer');
-      if (document.getElementById('chk-memphis').checked) scrapers.push('memphis');
-
-      if (!scrapers.length) {
-        showRunStatus('error', 'Select at least one scraper.', '');
-        return;
-      }
-
-      setRunLoading(true);
-      runStatus.className = 'status-banner';
-      if (pollInterval) clearInterval(pollInterval);
-
-      try {
-        const selectedZips = getSelectedZips();   // null = all, array = subset
-        const payload = { scrapers };
-        if (selectedZips !== null) payload.zips = selectedZips;
-
-        const res  = await fetch('/run', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(payload),
-        });
-        const json = await res.json();
-
-        if (json.status !== 'ok' || !json.triggered.length) {
-          setRunLoading(false);
-          showRunStatus('error', 'Could not start the run.', json.errors?.join(' · ') || 'Please try again.');
-          return;
-        }
-
-        // Show running state immediately, then poll for updates
-        scrapers.forEach(s => setChip(s === 'cash_buyer' ? 'cash' : 'memphis', 'running', 'Running…'));
-        pollInterval = setInterval(pollStatus, 12000);
-        setTimeout(pollStatus, 3000);   // first check after 3s
-
-      } catch {
+  async function pollStatus() {
+    try {
+      const res  = await fetch('/status');
+      const data = await res.json();
+      const cashState    = applyStatus('cash',    data.cash_buyer);
+      const memphisState = applyStatus('memphis', data.memphis);
+      const stillRunning = cashState === 'running' || memphisState === 'running';
+      if (!stillRunning && pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
         setRunLoading(false);
-        showRunStatus('error', 'Could not reach the server.', 'Check your internet connection and try again.');
+        showBanner('run-status', 'success', 'Run complete.', 'Check your email for the report.');
       }
-    });
+    } catch { /* silent — retry next tick */ }
+  }
 
-    /* ─── Load current status on page open ─────────────────────────── */
-    (async () => {
-      try {
-        const res  = await fetch('/status');
-        const data = await res.json();
-        const cashState    = applyStatus('cash',    data.cash_buyer);
-        const memphisState = applyStatus('memphis', data.memphis);
+  /* ═══════════════════════════════════════════════════════════
+     INITIAL STATUS LOAD  (GET /status)
+  ══════════════════════════════════════════════════════════ */
+  (async () => {
+    try {
+      const res  = await fetch('/status');
+      const data = await res.json();
+      const cashState    = applyStatus('cash',    data.cash_buyer);
+      const memphisState = applyStatus('memphis', data.memphis);
+      if (cashState === 'running' || memphisState === 'running') {
+        setRunLoading(true);
+        pollInterval = setInterval(pollStatus, 12000);
+        setTimeout(pollStatus, 3000);
+      }
+    } catch { /* no status yet */ }
+  })();
 
-        // If something is already running, start polling so the chip updates
-        if (cashState === 'running' || memphisState === 'running') {
-          setRunLoading(true);
-          pollInterval = setInterval(pollStatus, 12000);
-          setTimeout(pollStatus, 3000);
-        }
-      } catch { /* no status available yet */ }
-    })();
-  </script>
+  /* ═══════════════════════════════════════════════════════════
+     CONFIRMATION MODAL
+  ══════════════════════════════════════════════════════════ */
+  const confirmModal = document.getElementById('confirm-modal');
+
+  function buildConfirmSummary() {
+    const scrapers = [];
+    if (document.getElementById('chk-cash').checked)    scrapers.push('cash_buyer');
+    if (document.getElementById('chk-memphis').checked) scrapers.push('memphis');
+
+    if (!scrapers.length) {
+      showBanner('run-status', 'error', 'Select at least one scraper to run.', '');
+      return null;
+    }
+
+    const from = dateFrom.value;
+    const to   = dateTo.value;
+    const days = Math.ceil((new Date(to) - new Date(from)) / 864e5) + 1;
+    const selectedZips = getSelectedZips();
+
+    const row = (label, val) =>
+      `<div class="flex gap-3"><span class="text-xs text-gray-400 dark:text-gray-500 w-20 flex-shrink-0 pt-px">${label}</span>` +
+      `<span class="text-sm text-gray-800 dark:text-gray-200">${val}</span></div>`;
+
+    const scraperNames = scrapers
+      .map(s => s === 'cash_buyer' ? 'Cash Buyer Finder' : 'Memphis Daily News')
+      .join(', ');
+    const zipSummary = !scrapers.includes('cash_buyer') ? null
+      : selectedZips === null
+        ? 'All 41 Shelby County ZIPs'
+        : selectedZips.length + ' ZIP code' + (selectedZips.length !== 1 ? 's' : '') + ' selected';
+
+    let html = row('Date range', from + ' &rarr; ' + to + ' <span class="text-gray-400">(' + days + 'd)</span>');
+    html += row('Scrapers', scraperNames);
+    if (zipSummary) html += row('ZIP codes', zipSummary);
+
+    document.getElementById('confirm-summary').innerHTML = html;
+    return { scrapers, from, to, days, selectedZips };
+  }
+
+  document.getElementById('run-btn').addEventListener('click', () => {
+    const summary = buildConfirmSummary();
+    if (!summary) return;
+    confirmModal.dataset.payload = JSON.stringify(summary);
+    confirmModal.classList.remove('hidden');
+  });
+
+  document.getElementById('confirm-cancel').addEventListener('click', () => {
+    confirmModal.classList.add('hidden');
+  });
+
+  document.getElementById('confirm-start').addEventListener('click', async () => {
+    confirmModal.classList.add('hidden');
+    const { scrapers, from, to, days, selectedZips } = JSON.parse(confirmModal.dataset.payload || '{}');
+    if (!scrapers?.length) return;
+
+    setRunLoading(true);
+    document.getElementById('run-status').classList.add('hidden');
+    if (pollInterval) clearInterval(pollInterval);
+
+    try {
+      const payload = { scrapers, start_date: from, end_date: to, days };
+      if (selectedZips !== null) payload.zips = selectedZips;
+
+      const res  = await fetch('/run', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const json = await res.json();
+
+      if (json.status !== 'ok' || !json.triggered?.length) {
+        setRunLoading(false);
+        showBanner('run-status', 'error', 'Could not start the run.', json.errors?.join(' · ') || 'Please try again.');
+        return;
+      }
+
+      scrapers.forEach(s => setChip(s === 'cash_buyer' ? 'cash' : 'memphis', 'running', 'Running…'));
+      pollInterval = setInterval(pollStatus, 12000);
+      setTimeout(pollStatus, 3000);
+
+    } catch {
+      setRunLoading(false);
+      showBanner('run-status', 'error', 'Could not reach the server.', 'Check your internet connection and try again.');
+    }
+  });
+</script>
 
 </body>
 </html>

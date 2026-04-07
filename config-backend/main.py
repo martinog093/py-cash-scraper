@@ -107,8 +107,9 @@ async def save(
 
 class RunRequest(BaseModel):
     scrapers: list[str]
-    zips: list[str] | None = None   # Shelby ZIP filter; None means all 41
-    min_price: int | None = None    # Minimum sale price in USD; None = default 50000
+    zips: list[str] | None = None                  # Shelby ZIP filter; None means all 41
+    bergen_municipalities: list[str] | None = None  # Bergen municipality filter; None means all 39
+    min_price: int | None = None                    # Minimum sale price in USD; None = default 50000
     start_date: str | None = None
     end_date: str | None = None
     days: int | None = None
@@ -131,6 +132,8 @@ async def run_scrapers(req: RunRequest):
                 dispatch_inputs: dict[str, str] = {}
                 if scraper == "cash_buyer" and req.zips:
                     dispatch_inputs["shelby_zips"] = ",".join(req.zips)
+                if scraper == "cash_buyer" and req.bergen_municipalities:
+                    dispatch_inputs["bergen_municipalities"] = ",".join(req.bergen_municipalities)
                 if scraper == "cash_buyer" and req.days:
                     dispatch_inputs["days"] = str(req.days)
                 if scraper == "cash_buyer" and req.min_price:

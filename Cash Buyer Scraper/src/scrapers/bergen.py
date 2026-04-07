@@ -65,6 +65,7 @@ BERGEN_ZIPS = [
 def scrape_bergen(
     days: int = 7,
     zip_code: str | None = None,
+    municipalities: list[str] | None = None,
 ) -> list[dict]:
     """
     Scrape deed filings from Bergen County.
@@ -73,7 +74,7 @@ def scrape_bergen(
     the REST API directly via page.evaluate(fetch()) for each municipality.
     Returns raw deed records (not cash-filtered).
     """
-    towns      = _load_towns(zip_code)
+    towns      = _load_towns(zip_code, municipalities)
     end_date   = date.today()
     start_date = end_date - timedelta(days=days)
     return _run_in_browser(_scrape_towns, towns=towns, start_date=start_date, end_date=end_date)
@@ -82,6 +83,7 @@ def scrape_bergen(
 def run_bergen_pipeline(
     days: int = 7,
     zip_code: str | None = None,
+    municipalities: list[str] | None = None,
 ) -> list[dict]:
     """
     Full Bergen County pipeline in a single browser session:
@@ -95,7 +97,7 @@ def run_bergen_pipeline(
     """
     from src.cash_filter import filter_cash_sales_bergen
 
-    towns      = _load_towns(zip_code)
+    towns      = _load_towns(zip_code, municipalities)
     end_date   = date.today()
     start_date = end_date - timedelta(days=days)
 
@@ -446,11 +448,19 @@ def _parse_results(rows: list, search_town: str) -> list[dict]:
 
 # ── Town list ─────────────────────────────────────────────────────────────────
 
-def _load_towns(zip_code: str | None) -> list[str]:
+def _load_towns(
+    zip_code: str | None = None,
+    municipalities: list[str] | None = None,
+) -> list[str]:
     """
-    Return deduplicated municipality list from the ZIP map.
-    Values are pre-uppercased to match the portal's commonTowns exactly.
+    Return deduplicated municipality list.
+
+    Priority: explicit municipalities list > single zip_code > all BERGEN_ZIPS.
+    Municipality names must be uppercase to match the portal's commonTowns.
     """
+    if municipalities:
+        return [m.upper() for m in municipalities]
+
     try:
         with open(ZIP_MAP_FILE) as f:
             zip_map: dict = json.load(f)

@@ -15,6 +15,10 @@ on:
         description: Minimum sale price in USD (default 50000)
         required: false
         default: "50000"
+      bergen_municipalities:
+        description: 'Bergen County municipalities (comma-separated; leave blank for all 39)'
+        required: false
+        default: ''
   # schedule:
   #   - cron: '0 8 * * 0'   # Sundays 8:00 AM UTC (3:00 AM EST) — set schedule with Kash
 
@@ -52,10 +56,12 @@ jobs:
           ZIPS="${{ inputs.shelby_zips }}"
           DAYS="${{ inputs.days }}"
           MIN_PRICE="${{ inputs.min_price }}"
+          BERGEN_MUNIS="${{ inputs.bergen_municipalities }}"
           CMD="xvfb-run -a python main.py --no-sheets"
           [ -n "$ZIPS" ] && CMD="$CMD --zips $ZIPS"
           [ -n "$DAYS" ] && CMD="$CMD --days $DAYS"
           [ -n "$MIN_PRICE" ] && CMD="$CMD --min-price $MIN_PRICE"
+          [ -n "$BERGEN_MUNIS" ] && CMD="$CMD --bergen-municipalities \"$BERGEN_MUNIS\""
           eval $CMD
 
       - name: Persist buyer history DB

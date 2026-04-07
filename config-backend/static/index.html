@@ -329,9 +329,11 @@
               </div>
             </div>
 
-            <!-- Min price + ZIP picker (shown when chk-cash is checked) -->
-            <div id="zip-container" class="mt-3 pl-7">
-              <div class="flex items-center gap-2 mb-3">
+            <!-- Min price + pickers (shown when chk-cash is checked) -->
+            <div id="zip-container" class="mt-3 pl-7 space-y-4">
+
+              <!-- Min price -->
+              <div class="flex items-center gap-2">
                 <label for="min-price" class="text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">Min. sale price</label>
                 <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-md overflow-hidden focus-within:border-emerald-500 transition-colors bg-white dark:bg-gray-800">
                   <span class="px-2 text-xs text-gray-400 dark:text-gray-500 select-none">$</span>
@@ -340,32 +342,55 @@
                 </div>
                 <span class="text-xs text-gray-400 dark:text-gray-500">USD (default $50,000)</span>
               </div>
-              <div class="mb-1.5">
-                <p class="text-xs font-semibold text-gray-600 dark:text-gray-300">Shelby County (Memphis TN) ZIP codes</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">Bergen County NJ always runs all 39 municipalities — ZIP selection does not affect it.</p>
-              </div>
-              <button type="button" id="zip-toggle"
-                class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none">
-                Filter ZIPs: <span id="zip-toggle-label">All 41 selected</span>
-                <span id="zip-arrow" class="text-[0.6rem] transition-transform duration-200">▾</span>
-              </button>
-              <div id="zip-panel" class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
-                <!-- Controls -->
-                <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-200 dark:border-gray-600">
-                  <input type="text" id="zip-search" placeholder="Search ZIPs or neighbourhoods…"
-                    class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2.5 py-1.5 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors" />
-                  <button type="button" id="zip-all-btn"
-                    class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">All</button>
-                  <button type="button" id="zip-none-btn"
-                    class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">None</button>
-                </div>
-                <!-- Grid -->
-                <div id="zip-grid" class="zip-scroll grid grid-cols-2 md:grid-cols-4 bg-white dark:bg-gray-800 p-3 gap-0"></div>
-                <!-- Footer -->
-                <div class="px-3 py-1.5 bg-gray-50 dark:bg-gray-700/60 border-t border-gray-200 dark:border-gray-600 text-right">
-                  <span id="zip-count" class="text-xs text-gray-400 dark:text-gray-500">41 of 41 ZIP codes selected</span>
+
+              <!-- Shelby County ZIP picker -->
+              <div>
+                <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Shelby County (Memphis TN) — ZIP codes</p>
+                <button type="button" id="zip-toggle"
+                  class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none">
+                  Filter ZIPs: <span id="zip-toggle-label">All 41 selected</span>
+                  <span id="zip-arrow" class="text-[0.6rem] transition-transform duration-200">▾</span>
+                </button>
+                <div id="zip-panel" class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-200 dark:border-gray-600">
+                    <input type="text" id="zip-search" placeholder="Search ZIPs or neighbourhoods…"
+                      class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2.5 py-1.5 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors" />
+                    <button type="button" id="zip-all-btn"
+                      class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">All</button>
+                    <button type="button" id="zip-none-btn"
+                      class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">None</button>
+                  </div>
+                  <div id="zip-grid" class="zip-scroll grid grid-cols-2 md:grid-cols-4 bg-white dark:bg-gray-800 p-3 gap-0"></div>
+                  <div class="px-3 py-1.5 bg-gray-50 dark:bg-gray-700/60 border-t border-gray-200 dark:border-gray-600 text-right">
+                    <span id="zip-count" class="text-xs text-gray-400 dark:text-gray-500">41 of 41 ZIP codes selected</span>
+                  </div>
                 </div>
               </div>
+
+              <!-- Bergen County municipality picker -->
+              <div>
+                <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Bergen County (NJ) — Municipalities</p>
+                <button type="button" id="muni-toggle"
+                  class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none">
+                  Filter municipalities: <span id="muni-toggle-label">All 39 selected</span>
+                  <span id="muni-arrow" class="text-[0.6rem] transition-transform duration-200">▾</span>
+                </button>
+                <div id="muni-panel" class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/60 border-b border-gray-200 dark:border-gray-600">
+                    <input type="text" id="muni-search" placeholder="Search municipalities…"
+                      class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2.5 py-1.5 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors" />
+                    <button type="button" id="muni-all-btn"
+                      class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">All</button>
+                    <button type="button" id="muni-none-btn"
+                      class="text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-md px-2.5 py-1.5 transition-colors">None</button>
+                  </div>
+                  <div id="muni-grid" class="zip-scroll grid grid-cols-2 md:grid-cols-3 bg-white dark:bg-gray-800 p-3 gap-0"></div>
+                  <div class="px-3 py-1.5 bg-gray-50 dark:bg-gray-700/60 border-t border-gray-200 dark:border-gray-600 text-right">
+                    <span id="muni-count" class="text-xs text-gray-400 dark:text-gray-500">39 of 39 municipalities selected</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -627,6 +652,80 @@
     document.getElementById('zip-container').style.display = this.checked ? '' : 'none';
   });
 
+  /* ══════════════════════════════════════════════════════════
+     BERGEN MUNICIPALITY SELECTOR
+  ══════════════════════════════════════════════════════════ */
+  const MUNIS = [
+    "Alpine", "Bergenfield", "Bogota", "Closter", "Cresskill",
+    "Demarest", "Dumont", "Emerson", "Englewood", "Englewood Cliffs",
+    "Hackensack", "Harrington Park", "Hasbrouck Heights", "Haworth",
+    "Hillsdale", "Leonia", "Little Ferry", "Lodi", "Maywood",
+    "Montvale", "New Milford", "Northvale", "Norwood", "Oradell",
+    "Palisades Park", "Paramus", "Park Ridge", "Ridgefield",
+    "Ridgefield Park", "River Edge", "Rochelle Park", "Saddle Brook",
+    "South Hackensack", "Teaneck", "Tenafly", "Teterboro",
+    "Washington Township", "Westwood", "Woodcliff Lake",
+  ];
+
+  const muniGrid   = document.getElementById('muni-grid');
+  const muniCount  = document.getElementById('muni-count');
+  const muniToggle = document.getElementById('muni-toggle');
+  const muniPanel  = document.getElementById('muni-panel');
+  const muniLabel  = document.getElementById('muni-toggle-label');
+  const muniArrow  = document.getElementById('muni-arrow');
+  const muniSearch = document.getElementById('muni-search');
+
+  MUNIS.forEach(name => {
+    const id = 'mc-' + name.replace(/\s+/g, '-').toLowerCase();
+    const item = document.createElement('div');
+    item.className = 'flex items-center gap-1.5 py-[3px] px-1 min-w-0';
+    item.dataset.name = name.toLowerCase();
+    item.dataset.muni = name.toUpperCase();
+    item.innerHTML =
+      `<input type="checkbox" id="${id}" checked ` +
+      `class="w-3 h-3 rounded flex-shrink-0 cursor-pointer accent-emerald-600" />` +
+      `<label for="${id}" class="text-[0.7rem] text-gray-700 dark:text-gray-300 cursor-pointer select-none truncate" ` +
+      `title="${name}">${name}</label>`;
+    muniGrid.appendChild(item);
+  });
+
+  function updateMuniCount() {
+    const checked = muniGrid.querySelectorAll('input:checked').length;
+    const total   = MUNIS.length;
+    muniCount.textContent = checked + ' of ' + total + ' municipalities selected';
+    muniLabel.textContent = checked === total ? 'All ' + total + ' selected' : checked + ' of ' + total + ' selected';
+  }
+
+  function getSelectedMunis() {
+    const items   = [...muniGrid.querySelectorAll('[data-muni]')];
+    const checked = items.filter(el => el.querySelector('input').checked).map(el => el.dataset.muni);
+    return checked.length === MUNIS.length ? null : checked;   // null = all
+  }
+
+  muniGrid.addEventListener('change', updateMuniCount);
+
+  document.getElementById('muni-all-btn').addEventListener('click', () => {
+    muniGrid.querySelectorAll('input').forEach(cb => cb.checked = true);
+    updateMuniCount();
+  });
+  document.getElementById('muni-none-btn').addEventListener('click', () => {
+    muniGrid.querySelectorAll('input').forEach(cb => cb.checked = false);
+    updateMuniCount();
+  });
+
+  muniSearch.addEventListener('input', () => {
+    const q = muniSearch.value.trim().toLowerCase();
+    muniGrid.querySelectorAll('[data-name]').forEach(item => {
+      item.style.display = !q || item.dataset.name.includes(q) ? '' : 'none';
+    });
+  });
+
+  muniToggle.addEventListener('click', () => {
+    const isOpen = !muniPanel.classList.contains('hidden');
+    muniPanel.classList.toggle('hidden', isOpen);
+    muniArrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+  });
+
   /* ═══════════════════════════════════════════════════════════
      STATUS BANNER HELPERS
   ══════════════════════════════════════════════════════════ */
@@ -801,10 +900,11 @@
     const from = dateFrom.value;
     const to   = dateTo.value;
     const days = Math.ceil((new Date(to) - new Date(from)) / 864e5) + 1;
-    const selectedZips = getSelectedZips();
+    const selectedZips  = getSelectedZips();
+    const selectedMunis = getSelectedMunis();
 
     const row = (label, val) =>
-      `<div class="flex gap-3"><span class="text-xs text-gray-400 dark:text-gray-500 w-20 flex-shrink-0 pt-px">${label}</span>` +
+      `<div class="flex gap-3"><span class="text-xs text-gray-400 dark:text-gray-500 w-24 flex-shrink-0 pt-px">${label}</span>` +
       `<span class="text-sm text-gray-800 dark:text-gray-200">${val}</span></div>`;
 
     const scraperNames = scrapers
@@ -814,14 +914,19 @@
       : selectedZips === null
         ? 'All 41 Shelby County ZIPs'
         : selectedZips.length + ' ZIP code' + (selectedZips.length !== 1 ? 's' : '') + ' selected';
+    const muniSummary = !scrapers.includes('cash_buyer') ? null
+      : selectedMunis === null
+        ? 'All 39 Bergen municipalities'
+        : selectedMunis.length + ' municipalit' + (selectedMunis.length !== 1 ? 'ies' : 'y') + ' selected';
 
     let html = row('Date range', from + ' &rarr; ' + to + ' <span class="text-gray-400">(' + days + 'd)</span>');
     html += row('Scrapers', scraperNames);
-    if (zipSummary) html += row('ZIP codes', zipSummary);
+    if (zipSummary)  html += row('Shelby ZIPs', zipSummary);
+    if (muniSummary) html += row('Bergen', muniSummary);
 
     document.getElementById('confirm-summary').innerHTML = html;
     const minPrice = parseInt(document.getElementById('min-price')?.value || '50000', 10);
-    return { scrapers, from, to, days, selectedZips, minPrice };
+    return { scrapers, from, to, days, selectedZips, selectedMunis, minPrice };
   }
 
   document.getElementById('run-btn').addEventListener('click', () => {
@@ -837,7 +942,7 @@
 
   document.getElementById('confirm-start').addEventListener('click', async () => {
     confirmModal.classList.add('hidden');
-    const { scrapers, from, to, days, selectedZips, minPrice } = JSON.parse(confirmModal.dataset.payload || '{}');
+    const { scrapers, from, to, days, selectedZips, selectedMunis, minPrice } = JSON.parse(confirmModal.dataset.payload || '{}');
     if (!scrapers?.length) return;
 
     setRunLoading(true);
@@ -846,7 +951,8 @@
 
     try {
       const payload = { scrapers, start_date: from, end_date: to, days };
-      if (selectedZips !== null) payload.zips = selectedZips;
+      if (selectedZips  !== null) payload.zips = selectedZips;
+      if (selectedMunis !== null) payload.bergen_municipalities = selectedMunis;
       if (minPrice && minPrice !== 50000) payload.min_price = minPrice;
 
       const res  = await fetch('/run', {

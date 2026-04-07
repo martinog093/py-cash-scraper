@@ -57,6 +57,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=7, help="Days back to scrape (default: 7)")
     parser.add_argument("--zip", dest="zip_code", default=None, help="Limit to one ZIP code")
     parser.add_argument("--zips", dest="zip_codes", default=None, help="Comma-separated Shelby ZIP codes (default: all)")
+    parser.add_argument("--bergen-municipalities", dest="bergen_municipalities", default=None, help="Comma-separated Bergen County municipality names (default: all 39)")
     parser.add_argument("--min-price", dest="min_price", type=float, default=50_000.0, help="Minimum sale price filter in USD (default: 50000)")
     parser.add_argument("--no-email", action="store_true", help="Skip email delivery")
     parser.add_argument("--no-sheets", action="store_true", help="Skip Google Sheets upload")
@@ -92,7 +93,8 @@ def main() -> None:
     try:
         from src.scrapers.bergen import run_bergen_pipeline
 
-        cash_bergen = run_bergen_pipeline(days=args.days, zip_code=args.zip_code)
+        bergen_muni_list = [m.strip() for m in args.bergen_municipalities.split(",") if m.strip()] if args.bergen_municipalities else None
+        cash_bergen = run_bergen_pipeline(days=args.days, zip_code=args.zip_code, municipalities=bergen_muni_list)
         logger.info("Bergen: %d confirmed cash sales after filter", len(cash_bergen))
         all_cash_records.extend(cash_bergen)
     except Exception as e:

@@ -42,9 +42,12 @@ def scrape_divorce(page: Page, target_date: date | None = None) -> list[dict]:
     logger.info("Total candidates to inspect: %d", len(candidates))
 
     # Phase 2: open each detail page, skip non-divorce filings
+    # 2-second pause between requests to avoid MDN rate limiting
     records = []
     for i, (fk, xid) in enumerate(candidates, 1):
         logger.info("Checking candidate %d/%d — fk=%s xid=%s", i, len(candidates), fk, xid)
+        if i > 1:
+            page.wait_for_timeout(2000)
         record = _get_divorce_detail(page, fk, xid, target_date)
         if record:
             records.append(record)
@@ -171,7 +174,7 @@ def _get_divorce_detail(
 
     try:
         page.goto(detail_url, wait_until="domcontentloaded")
-        page.wait_for_selector("#record-details table.data-table", timeout=15000)
+        page.wait_for_selector("#record-details table.data-table", timeout=30000)
     except PlaywrightTimeoutError:
         logger.warning("Detail page timed out for fk=%s xid=%s — skipping", fk, xid)
         return None

@@ -50,7 +50,9 @@ def _extract_all_pages(page: Page, target_date: date) -> list[dict]:
         view_links = _get_view_links(page)
         logger.info("Found %d records on page %d", len(view_links), page_num)
 
-        for fk, xid, listing_name in view_links:
+        for i, (fk, xid, listing_name) in enumerate(view_links):
+            if i > 0:
+                page.wait_for_timeout(2000)
             record = _scrape_detail_page(page, fk, xid, listing_name, target_date)
             if record:
                 records.append(record)
@@ -208,7 +210,7 @@ def _scrape_detail_page(
     logger.info("  Detail page --> %s", detail_url)
 
     page.goto(detail_url, wait_until="domcontentloaded")
-    page.wait_for_selector("#record-details table.data-table", timeout=15000)
+    page.wait_for_selector("#record-details table.data-table", timeout=30000)
 
     fields = _parse_detail_fields(page)
 

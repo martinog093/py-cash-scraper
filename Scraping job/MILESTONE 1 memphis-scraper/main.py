@@ -40,6 +40,13 @@ def main():
 
     print("=== All done ===")
 
+    print("=== Sending email report ===")
+    try:
+        from src.email_sender import send_report
+        send_report()
+    except Exception as e:
+        print(f"Email delivery failed: {e}")
+
 
 if __name__ == "__main__":
     main()

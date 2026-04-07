@@ -38,8 +38,11 @@ jobs:
 
       - name: Run scraper
         env:
-          MDN_USERNAME: ${{ secrets.MDN_USERNAME }}
-          MDN_PASSWORD: ${{ secrets.MDN_PASSWORD }}
+          MDN_USERNAME:    ${{ secrets.MDN_USERNAME }}
+          MDN_PASSWORD:    ${{ secrets.MDN_PASSWORD }}
+          EMAIL_SENDER:    ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD:  ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         working-directory: "Scraping job/MILESTONE 1 memphis-scraper"
         run: |
           START="${{ inputs.start_date }}"

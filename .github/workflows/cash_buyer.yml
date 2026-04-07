@@ -11,6 +11,10 @@ on:
         description: Number of days back to scrape (default 7)
         required: false
         default: "7"
+      min_price:
+        description: Minimum sale price in USD (default 50000)
+        required: false
+        default: "50000"
   # schedule:
   #   - cron: '0 8 * * 0'   # Sundays 8:00 AM UTC (3:00 AM EST) — set schedule with Kash
 
@@ -47,9 +51,11 @@ jobs:
         run: |
           ZIPS="${{ inputs.shelby_zips }}"
           DAYS="${{ inputs.days }}"
+          MIN_PRICE="${{ inputs.min_price }}"
           CMD="xvfb-run -a python main.py --no-sheets"
           [ -n "$ZIPS" ] && CMD="$CMD --zips $ZIPS"
           [ -n "$DAYS" ] && CMD="$CMD --days $DAYS"
+          [ -n "$MIN_PRICE" ] && CMD="$CMD --min-price $MIN_PRICE"
           eval $CMD
 
       - name: Persist buyer history DB

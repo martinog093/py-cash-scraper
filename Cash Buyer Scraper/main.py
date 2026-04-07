@@ -57,6 +57,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=7, help="Days back to scrape (default: 7)")
     parser.add_argument("--zip", dest="zip_code", default=None, help="Limit to one ZIP code")
     parser.add_argument("--zips", dest="zip_codes", default=None, help="Comma-separated Shelby ZIP codes (default: all)")
+    parser.add_argument("--min-price", dest="min_price", type=float, default=50_000.0, help="Minimum sale price filter in USD (default: 50000)")
     parser.add_argument("--no-email", action="store_true", help="Skip email delivery")
     parser.add_argument("--no-sheets", action="store_true", help="Skip Google Sheets upload")
     args = parser.parse_args()
@@ -77,7 +78,7 @@ def main() -> None:
         raw_shelby = scrape_shelby(days=args.days, zip_codes=zip_list, zip_code=args.zip_code)
         logger.info("Shelby: %d raw deed records", len(raw_shelby))
 
-        cash_shelby = filter_cash_sales_shelby(raw_shelby)
+        cash_shelby = filter_cash_sales_shelby(raw_shelby, min_price=args.min_price)
         logger.info("Shelby: %d confirmed cash sales after filter", len(cash_shelby))
 
         all_cash_records.extend(cash_shelby)

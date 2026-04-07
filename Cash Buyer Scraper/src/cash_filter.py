@@ -36,10 +36,10 @@ HEADERS = {
 # Crawl delay between name-search requests
 CRAWL_DELAY_SECONDS = 31
 
-MIN_PURCHASE_PRICE = 50_000.0
+DEFAULT_MIN_PRICE = 50_000.0
 
 
-def filter_cash_sales_shelby(records: list[dict]) -> list[dict]:
+def filter_cash_sales_shelby(records: list[dict], min_price: float = DEFAULT_MIN_PRICE) -> list[dict]:
     """
     From a list of raw Shelby County deed records, return only confirmed cash sales.
 
@@ -47,18 +47,18 @@ def filter_cash_sales_shelby(records: list[dict]) -> list[dict]:
     Step 2 (thorough): for records that pass step 1, confirm no Deed of Trust
     was recorded for this buyer within 30 days via a p3.php name search.
 
-    Records below $50,000 are always excluded.
+    Records below min_price are always excluded (default $50,000).
     """
     # Step 1: price floor + mortgage amount fast filter
     candidates = [
         r for r in records
-        if r.get("purchase_price", 0) >= MIN_PURCHASE_PRICE
+        if r.get("purchase_price", 0) >= min_price
         and r.get("mortgage_amount", 0) == 0.0
     ]
 
     logger.info(
-        "Cash filter step 1: %d/%d records pass (price >= $50k, mortgage_amount == 0)",
-        len(candidates), len(records),
+        "Cash filter step 1: %d/%d records pass (price >= $%s, mortgage_amount == 0)",
+        len(candidates), len(records), f"{min_price:,.0f}",
     )
 
     if not candidates:

@@ -1,0 +1,45 @@
+name: Test Email
+
+on:
+  workflow_dispatch:
+
+jobs:
+  send-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send test email
+        env:
+          EMAIL_SENDER:    ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD:  ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+        run: |
+          python3 - <<'EOF'
+          import os, smtplib
+          from email.message import EmailMessage
+          from datetime import datetime, timezone
+
+          sender    = os.environ["EMAIL_SENDER"]
+          password  = os.environ["EMAIL_PASSWORD"]
+          recipient = os.environ["EMAIL_RECIPIENT"]
+
+          if not all([sender, password, recipient]):
+              raise SystemExit("ERROR: EMAIL_SENDER / EMAIL_PASSWORD / EMAIL_RECIPIENT secrets not set.")
+
+          msg = EmailMessage()
+          msg["Subject"] = "Scraper email test — credentials working correctly"
+          msg["From"]    = sender
+          msg["To"]      = recipient
+          msg.set_content(
+              f"Hi,\n\n"
+              f"This is a confirmation that your scraper email credentials are set up correctly.\n\n"
+              f"Sent: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}\n\n"
+              f"You're all set — the scraper will be able to email you results after each run.\n"
+          )
+
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+              smtp.login(sender, password)
+              smtp.send_message(msg)
+
+          print("Test email sent successfully.")
+          EOF

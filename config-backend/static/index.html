@@ -232,6 +232,21 @@
               <div id="save-status-sub" class="text-xs mt-0.5 opacity-75"></div>
             </div>
           </div>
+
+          <div class="border-t border-gray-100 dark:border-gray-700 pt-3 mt-1">
+            <button id="test-email-btn" type="button"
+              class="w-full flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-600 hover:border-emerald-500 dark:hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 text-gray-600 dark:text-gray-300 font-medium text-sm py-2.5 rounded-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2">
+              <span id="test-email-spin" class="spin-el hidden"></span>
+              <span id="test-email-label">Send Test Email</span>
+            </button>
+            <div id="test-email-status" class="hidden mt-2 rounded-lg px-3 py-2 text-xs flex items-start gap-2" role="alert" aria-live="polite">
+              <em id="test-email-status-icon" class="not-italic flex-shrink-0 font-semibold"></em>
+              <div>
+                <div id="test-email-status-text" class="font-medium leading-snug"></div>
+                <div id="test-email-status-sub" class="opacity-75 mt-0.5"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -666,6 +681,31 @@
       saveBtn.disabled = false;
       document.getElementById('save-spin').classList.add('hidden');
       document.getElementById('save-label').textContent = 'Save Credentials';
+    }
+  });
+
+  /* ── Test Email ─────────────────────────────────────────── */
+  document.getElementById('test-email-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('test-email-btn');
+    btn.disabled = true;
+    document.getElementById('test-email-spin').classList.remove('hidden');
+    document.getElementById('test-email-label').textContent = 'Sending…';
+    document.getElementById('test-email-status').classList.add('hidden');
+
+    try {
+      const res  = await fetch('/test-email', { method: 'POST' });
+      const json = await res.json();
+      if (res.ok && json.status === 'ok') {
+        showBanner('test-email-status', 'success', 'Test email triggered — check your inbox in about 30 seconds.');
+      } else {
+        showBanner('test-email-status', 'error', json.message || 'Could not trigger test email.');
+      }
+    } catch {
+      showBanner('test-email-status', 'error', 'Could not reach the server.');
+    } finally {
+      btn.disabled = false;
+      document.getElementById('test-email-spin').classList.add('hidden');
+      document.getElementById('test-email-label').textContent = 'Send Test Email';
     }
   });
 

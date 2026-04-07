@@ -160,6 +160,26 @@ async def run_scrapers(req: RunRequest):
     return JSONResponse({"status": "ok", "triggered": triggered, "errors": errors})
 
 
+@app.post("/test-email")
+async def test_email():
+    """Trigger the test_email.yml workflow to verify email credentials."""
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{GITHUB_BASE}/actions/workflows/test_email.yml/dispatches",
+                headers=GITHUB_HEADERS,
+                json={"ref": REPO_BRANCH, "inputs": {}},
+            )
+            if resp.status_code == 204:
+                return JSONResponse({"status": "ok"})
+            return JSONResponse(
+                {"status": "error", "message": f"GitHub returned {resp.status_code}"},
+                status_code=502,
+            )
+    except Exception as exc:
+        return JSONResponse({"status": "error", "message": str(exc)}, status_code=500)
+
+
 @app.get("/status")
 async def get_status():
     """Return the latest run for each workflow (status, conclusion, when, link)."""

@@ -3,7 +3,7 @@ import sys
 from datetime import date, datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-from src.auth import login, logout
+from src.auth import login, logout, ensure_session
 from src.scrapers.tax_lien import scrape_tax_liens
 from src.assessor import verify_ownership
 from src.output import write_output
@@ -58,6 +58,7 @@ def run(start_date: date | None = None, end_date: date | None = None):
         try:
             for target_date in date_range:
                 logger.info("=== Scraping %s ===", target_date)
+                page = ensure_session(page, context)
 
                 # --- Step 2: Scrape Tax Liens ---
                 raw_records = scrape_tax_liens(page, target_date)

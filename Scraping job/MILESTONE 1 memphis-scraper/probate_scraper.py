@@ -3,7 +3,7 @@ import sys
 from datetime import date, datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-from src.auth import login, logout
+from src.auth import login, logout, ensure_session
 from src.scrapers.probate import scrape_probate
 from src.docket_lookup import get_probate_parties
 from src.assessor import search_by_name
@@ -68,6 +68,7 @@ def run(start_date: date | None = None, end_date: date | None = None):
         try:
             for target_date in date_range:
                 logger.info("=== Scraping %s ===", target_date)
+                page = ensure_session(page, context)
 
                 # --- Step 2: Scrape Probate Court docket numbers ---
                 raw_records = scrape_probate(page, target_date)

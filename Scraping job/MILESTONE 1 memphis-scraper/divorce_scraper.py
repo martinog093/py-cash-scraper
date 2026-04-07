@@ -3,7 +3,7 @@ import sys
 from datetime import date, datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-from src.auth import login, logout
+from src.auth import login, logout, ensure_session
 from src.scrapers.divorce import scrape_divorce
 from src.assessor import search_by_name
 from src.output import write_output
@@ -57,6 +57,7 @@ def run(start_date: date | None = None, end_date: date | None = None):
         try:
             for target_date in date_range:
                 logger.info("=== Scraping %s ===", target_date)
+                page = ensure_session(page, context)
 
                 raw_records = scrape_divorce(page, target_date)
                 logger.info(

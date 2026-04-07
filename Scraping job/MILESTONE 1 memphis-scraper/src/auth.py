@@ -63,6 +63,28 @@ def login(context: BrowserContext) -> Page:
     return page
 
 
+def ensure_session(page: Page, context: BrowserContext) -> Page:
+    """
+    Verify the current session is still authenticated. If the session has
+    expired (MDN shows the login form), re-login and return a fresh page.
+    Returns the (possibly new) authenticated page.
+    """
+    try:
+        page.goto(
+            "https://www.memphisdailynews.com/",
+            wait_until="domcontentloaded",
+            timeout=15000,
+        )
+        if page.query_selector(SUBMIT_SELECTOR):
+            logger.info("Session expired — re-logging in...")
+            return login(context)
+        logger.debug("Session still valid.")
+        return page
+    except Exception as e:
+        logger.warning("Session check failed (%s) — attempting re-login", e)
+        return login(context)
+
+
 def logout(page: Page) -> None:
     """
     Log out of Memphis Daily News so the server-side session ends

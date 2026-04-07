@@ -64,7 +64,7 @@ async def save(
     secrets = {
         "EMAIL_SENDER":    email,
         "EMAIL_RECIPIENT": email,   # Kash emails himself
-        "EMAIL_PASSWORD":  app_password,
+        "EMAIL_PASSWORD":  app_password.replace(" ", ""),  # strip spaces — Gmail SMTP requires no spaces
         "MDN_USERNAME":    mdn_username,
         "MDN_PASSWORD":    mdn_password,
     }

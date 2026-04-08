@@ -53,6 +53,36 @@ async def form():
     return (STATIC_DIR / "index.html").read_text()
 
 
+async def _set_variable(client: httpx.AsyncClient, name: str, value: str) -> None:
+    """Create or update a GitHub Actions repository variable (readable, not encrypted)."""
+    resp = await client.put(
+        f"{GITHUB_BASE}/actions/variables/{name}",
+        headers=GITHUB_HEADERS,
+        json={"name": name, "value": value},
+    )
+    # 201 = created, 204 = updated — both are success
+    if resp.status_code not in (201, 204):
+        resp.raise_for_status()
+
+
+@app.get("/config")
+async def get_config():
+    """Return saved non-sensitive config (email + MDN username) from GitHub Variables."""
+    result: dict[str, str] = {}
+    try:
+        async with httpx.AsyncClient() as client:
+            for var in ("CONFIG_EMAIL", "CONFIG_MDN_USERNAME"):
+                resp = await client.get(
+                    f"{GITHUB_BASE}/actions/variables/{var}",
+                    headers=GITHUB_HEADERS,
+                )
+                if resp.status_code == 200:
+                    result[var] = resp.json().get("value", "")
+    except Exception:
+        pass  # best-effort — form just stays blank
+    return JSONResponse(result)
+
+
 @app.post("/save")
 async def save(
     email: str        = Form(...),
@@ -60,13 +90,18 @@ async def save(
     mdn_username: str = Form(...),
     mdn_password: str = Form(...),
 ):
-    """Encrypt and push all five GitHub Secrets to the configured repo."""
+    """Encrypt and push all five GitHub Secrets; also save non-sensitive fields as Variables."""
     secrets = {
         "EMAIL_SENDER":    email,
         "EMAIL_RECIPIENT": email,   # Kash emails himself
         "EMAIL_PASSWORD":  app_password.replace(" ", ""),  # strip spaces — Gmail SMTP requires no spaces
         "MDN_USERNAME":    mdn_username,
         "MDN_PASSWORD":    mdn_password,
+    }
+    # Non-sensitive fields stored as readable Variables so the form can pre-populate on any device
+    variables = {
+        "CONFIG_EMAIL":        email,
+        "CONFIG_MDN_USERNAME": mdn_username,
     }
 
     try:
@@ -89,6 +124,9 @@ async def save(
                     json={"encrypted_value": encrypted, "key_id": key_data["key_id"]},
                 )
                 resp.raise_for_status()
+
+            for name, value in variables.items():
+                await _set_variable(client, name, value)
 
     except httpx.HTTPStatusError as exc:
         status = exc.response.status_code

@@ -869,6 +869,27 @@
      INITIAL STATUS LOAD  (GET /status)
   ══════════════════════════════════════════════════════════ */
   (async () => {
+    // Pre-populate credentials from saved GitHub Variables (works on any device)
+    try {
+      const res  = await fetch('/config');
+      const data = await res.json();
+      if (data.CONFIG_EMAIL) {
+        document.getElementById('email').value        = data.CONFIG_EMAIL;
+        document.getElementById('email').dispatchEvent(new Event('input'));
+      }
+      if (data.CONFIG_MDN_USERNAME) {
+        document.getElementById('mdn_username').value = data.CONFIG_MDN_USERNAME;
+      }
+      if (data.CONFIG_EMAIL || data.CONFIG_MDN_USERNAME) {
+        // Show a subtle hint that passwords still need to be entered
+        const hint = document.createElement('p');
+        hint.className = 'text-xs text-emerald-600 dark:text-emerald-400 mt-1';
+        hint.textContent = 'Email and MDN username restored. Re-enter your passwords to save.';
+        document.getElementById('save-btn').parentElement.prepend(hint);
+      }
+    } catch { /* best-effort */ }
+
+    // Check run status
     try {
       const res  = await fetch('/status');
       const data = await res.json();

@@ -54,15 +54,26 @@ async def form():
 
 
 async def _set_variable(client: httpx.AsyncClient, name: str, value: str) -> None:
-    """Create or update a GitHub Actions repository variable (readable, not encrypted)."""
-    resp = await client.put(
+    """Create or update a GitHub Actions repository variable (readable, not encrypted).
+    Variables API: PATCH to update existing, POST to create new.
+    """
+    patch = await client.patch(
         f"{GITHUB_BASE}/actions/variables/{name}",
         headers=GITHUB_HEADERS,
         json={"name": name, "value": value},
     )
-    # 201 = created, 204 = updated — both are success
-    if resp.status_code not in (201, 204):
-        resp.raise_for_status()
+    if patch.status_code == 204:
+        return  # updated
+    if patch.status_code == 404:
+        post = await client.post(
+            f"{GITHUB_BASE}/actions/variables",
+            headers=GITHUB_HEADERS,
+            json={"name": name, "value": value},
+        )
+        if post.status_code not in (201, 204):
+            post.raise_for_status()
+        return
+    patch.raise_for_status()
 
 
 @app.get("/config")

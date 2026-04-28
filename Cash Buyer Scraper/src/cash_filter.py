@@ -81,7 +81,16 @@ def filter_cash_sales_shelby(records: list[dict], min_price: float = DEFAULT_MIN
                 confirmed.append(record)
                 continue
 
-            has_lien = _buyer_has_deed_of_trust(client, buyer, sale_date)
+            # buyer_name may be "BUYER A; BUYER B" for joint purchases — check each,
+            # respecting the crawl delay between every request (not just per-record)
+            buyer_names = [b.strip() for b in buyer.split(";") if b.strip()]
+            has_lien = False
+            for j, name in enumerate(buyer_names):
+                if _buyer_has_deed_of_trust(client, name, sale_date):
+                    has_lien = True
+                    break
+                if j < len(buyer_names) - 1:
+                    time.sleep(CRAWL_DELAY_SECONDS)
 
             if has_lien:
                 logger.info(

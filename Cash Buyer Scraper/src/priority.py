@@ -11,8 +11,10 @@ Entity type:
   "Individual" — everything else
 """
 
+import re
+
 ENTITY_KEYWORDS = {
-    "llc", "inc", "corp", "trust", "l.p.", "lp", "ltd", "holdings",
+    "llc", "inc", "corp", "trust", "lp", "ltd", "holdings",
     "properties", "realty", "investments", "investment", "group",
     "ventures", "venture", "partners", "partnership", "fund",
     "capital", "enterprises", "enterprise", "management", "mgmt",
@@ -21,11 +23,18 @@ ENTITY_KEYWORDS = {
 
 
 def detect_entity_type(buyer_name: str) -> str:
-    """Return "LLC" if the name looks like a business entity, else "Individual"."""
+    """Return "LLC" if the name looks like a business entity, else "Individual".
+
+    Matches whole words only — a naive substring check would misfire on
+    person names that happen to contain a keyword (e.g. "VINCENT" contains
+    "inc", "RALPH" contains "lp").
+    """
     name_lower = buyer_name.lower()
-    for kw in ENTITY_KEYWORDS:
-        if kw in name_lower:
-            return "LLC"
+    words = set(re.findall(r"[a-z]+", name_lower))
+    if words & ENTITY_KEYWORDS:
+        return "LLC"
+    if re.search(r"\bl\.p\.?\b", name_lower):  # "L.P." — periods split it into "l"/"p" above
+        return "LLC"
     return "Individual"
 
 

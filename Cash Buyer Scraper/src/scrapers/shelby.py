@@ -167,8 +167,12 @@ def _parse_hit_list(html: str, zipcode: str) -> list[dict]:
 
         inst_num    = cells[1].get_text(strip=True)
         inst_code   = cells[2].get_text(strip=True)
-        grantor     = cells[3].get_text(separator=" ", strip=True)
-        grantee     = cells[4].get_text(separator=" ", strip=True)
+        # Joint grantors/grantees are rendered as separate lines within the
+        # same cell (e.g. two names via <br>). get_text(separator=" ") would
+        # smash them into one run-on string ("ATKINSON ROBYN ATKINSON VINCENT
+        # B"), so join each stripped line with "; " to keep names distinct.
+        grantor     = "; ".join(cells[3].stripped_strings)
+        grantee     = "; ".join(cells[4].stripped_strings)
         rec_date    = cells[5].get_text(strip=True)
         transfer    = cells[6].get_text(strip=True)
         mortgage    = cells[7].get_text(strip=True)

@@ -11,10 +11,13 @@ Options:
     --no-sheets     Skip Google Sheets upload
 
 The script runs:
-  1. Shelby County (Memphis TN) — httpx POST to p2.php, cash filter via p3.php
+  1. Shelby County (Memphis TN) — httpx POST to p2.php, cash filter via p3.php,
+     then a live Assessor portal lookup (assessormelvinburgess.com) per confirmed
+     cash sale for deed_url/assessor_url/owner cross-check (Shelby only)
   2. Bergen County (Bergen County NJ) — Playwright on BrowserView SPA (single session for scrape + cash filter)
   3. SQLite buyer history update
   4. Priority scoring
+  4b. Remarks generation (flip detection, Assessor lag/mismatch notes, Hot-buyer notes)
   5. CSV output  → output/cash_buyers_YYYY-MM-DD.csv
   6. Google Sheets append
   7. Email delivery
@@ -72,7 +75,7 @@ def main() -> None:
     # ── 1. Shelby County (Memphis TN) ────────────────────────────────────────
     logger.info("--- Shelby County (Memphis TN) ---")
     try:
-        from src.scrapers.shelby import scrape_shelby
+        from src.scrapers.shelby import scrape_shelby, build_deed_url
         from src.cash_filter import filter_cash_sales_shelby
 
         zip_list = [z.strip() for z in args.zip_codes.split(",") if z.strip()] if args.zip_codes else None
@@ -81,6 +84,40 @@ def main() -> None:
 
         cash_shelby = filter_cash_sales_shelby(raw_shelby, min_price=args.min_price)
         logger.info("Shelby: %d confirmed cash sales after filter", len(cash_shelby))
+
+        for r in cash_shelby:
+            r["deed_url"] = build_deed_url(r.get("record_number", ""), r.get("sale_date", ""))
+
+        # ── Assessor lookup pass (Shelby only — no Bergen County equivalent) ──
+        if cash_shelby:
+            logger.info("--- Assessor lookups (%d confirmed Shelby cash sales) ---", len(cash_shelby))
+            try:
+                from src.assessor import lookup_parcels
+                from src.normalize import names_share_tokens
+
+                addresses = [r.get("property_address", "") for r in cash_shelby]
+                assessor_results = lookup_parcels(addresses)
+
+                for r in cash_shelby:
+                    info = assessor_results.get(r.get("property_address", ""), {})
+                    r["assessor_url"] = info.get("assessor_url", "")
+                    r["assessor_owner_name"] = info.get("owner_name", "")
+                    r["assessor_match_type"] = info.get("match_type", "none")
+                    r["assessor_sales_history"] = info.get("sales_history", [])
+                    r["assessor_candidates"] = info.get("candidates", [])
+                    # Only trust the Assessor's mailing address once its owner
+                    # has already updated to reflect THIS buyer (token match)
+                    # -- otherwise it's the prior owner/seller's mailing
+                    # address, which would silently inject wrong data given
+                    # the ~60% week-1-2 lag rate measured against live data.
+                    owner_name = info.get("owner_name", "")
+                    if owner_name and names_share_tokens(owner_name, r.get("buyer_name", "")):
+                        r["buyer_mailing_address"] = info.get("owner_mailing_address", "")
+            except Exception as e:
+                logger.error("Assessor lookup pass failed: %s", e, exc_info=True)
+                for r in cash_shelby:
+                    r.setdefault("assessor_url", "")
+                    r.setdefault("assessor_match_type", "none")
 
         all_cash_records.extend(cash_shelby)
     except Exception as e:
@@ -128,6 +165,20 @@ def main() -> None:
         logger.info("Priority breakdown — Hot: %d  Warm: %d  Standard: %d", hot, warm, std)
     except Exception as e:
         logger.error("Priority scoring failed: %s", e, exc_info=True)
+
+    # ── 4b. Remarks generation ───────────────────────────────────────────────
+    logger.info("--- Generating remarks ---")
+    try:
+        from src.buyer_history import get_purchase_history_for_address
+        from src.remarks import generate_remarks
+
+        for r in all_cash_records:
+            history_rows = get_purchase_history_for_address(r.get("property_address", ""))
+            r["remarks"] = generate_remarks(r, history_rows)
+    except Exception as e:
+        logger.error("Remarks generation failed: %s", e, exc_info=True)
+        for r in all_cash_records:
+            r.setdefault("remarks", "")
 
     # ── 5. CSV output ────────────────────────────────────────────────────────
     csv_path = ""

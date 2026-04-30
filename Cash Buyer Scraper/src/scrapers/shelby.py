@@ -11,7 +11,7 @@ Max:      1,000 results per search (unlikely to hit for 7-day/zip searches)
 
 import logging
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 import httpx
 from bs4 import BeautifulSoup
@@ -210,3 +210,22 @@ def _parse_amount(text: str) -> float:
         return float(text.replace("$", "").replace(",", "").strip() or "0")
     except ValueError:
         return 0.0
+
+
+def build_deed_url(record_number: str, sale_date: str) -> str:
+    """
+    Construct the Shelby County Register deed-detail URL. Confirmed via a
+    plain GET (no session/cookie needed):
+      pdetail.php?year={YYYY}&instnum={record_number}&db=0&book=**0
+
+    `year` is derived from sale_date (MM/DD/YYYY), not parsed out of
+    record_number, even though they happen to share a leading "26"/"2026" --
+    sale_date is the authoritative date source. `book=**0` is a literal
+    fixed string the site itself uses in its own "Details" links, not a
+    placeholder to fill with a real book number -- pass it through unchanged.
+    """
+    try:
+        year = datetime.strptime(sale_date, "%m/%d/%Y").year
+    except ValueError:
+        return ""
+    return f"{BASE_URL}/pdetail.php?year={year}&instnum={record_number}&db=0&book=**0"

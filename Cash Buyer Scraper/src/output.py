@@ -21,15 +21,23 @@ COLUMNS = [
     "purchase_price",
     "deed_type",
     "record_number",
+    "deed_url",
+    "assessor_url",
     "buyer_mailing_address",
     "times_bought_90d",
     "priority",
+    "remarks",
 ]
 
 PRIORITY_COLORS = {
     "Hot":      "FF4444",
     "Warm":     "FFA500",
     "Standard": "FFFFFF",
+}
+
+HYPERLINK_LABELS = {
+    "deed_url": "Deed",
+    "assessor_url": "Assessor",
 }
 
 
@@ -63,8 +71,11 @@ def write_excel(records: list[dict], output_dir: str = "output") -> str:
         cell.fill = header_fill
     ws.freeze_panes = "A2"
 
-    # Colour-code priority column (last column) and auto-fit widths
+    # Colour-code priority column, render URL columns as clickable
+    # hyperlinks, and auto-fit widths
     priority_col_idx = COLUMNS.index("priority") + 1
+    url_col_idxs = {name: COLUMNS.index(name) + 1 for name in HYPERLINK_LABELS if name in COLUMNS}
+    hyperlink_font = Font(color="0563C1", underline="single")
     col_widths = {i: len(col) for i, col in enumerate(COLUMNS, start=1)}
 
     for row in ws.iter_rows(min_row=2):
@@ -75,6 +86,17 @@ def write_excel(records: list[dict], output_dir: str = "output") -> str:
             priority_cell.fill = PatternFill("solid", fgColor=color)
             if priority == "Hot":
                 priority_cell.font = Font(bold=True, color="FFFFFF")
+
+        # Relabel URL cells as short clickable links BEFORE the width pass
+        # below, so column widths are computed from the short label
+        # ("Deed"/"Assessor"), not the full URL string.
+        for col_name, idx in url_col_idxs.items():
+            cell = row[idx - 1]
+            url = str(cell.value or "").strip()
+            if url:
+                cell.hyperlink = url
+                cell.value = HYPERLINK_LABELS[col_name]
+                cell.font = hyperlink_font
 
         for i, cell in enumerate(row, start=1):
             val_len = len(str(cell.value or ""))

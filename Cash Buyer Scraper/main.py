@@ -2,11 +2,13 @@
 Cash Buyer Scraper — main entry point.
 
 Usage:
-    python main.py [--days N] [--zip ZIP_CODE] [--no-email] [--no-sheets]
+    python main.py [--days N] [--zip ZIP_CODE] [--no-shelby] [--no-bergen] [--no-email] [--no-sheets]
 
 Options:
     --days N        Number of days back to scrape (default: 7)
     --zip ZIP       Scrape a single ZIP code only (Shelby) or town only (Bergen)
+    --no-shelby     Skip Shelby County (Memphis TN) entirely
+    --no-bergen     Skip Bergen County (NJ) entirely
     --no-email      Skip email delivery
     --no-sheets     Skip Google Sheets upload
 
@@ -62,6 +64,8 @@ def main() -> None:
     parser.add_argument("--zips", dest="zip_codes", default=None, help="Comma-separated Shelby ZIP codes (default: all)")
     parser.add_argument("--bergen-municipalities", dest="bergen_municipalities", default=None, help="Comma-separated Bergen County municipality names (default: all 39)")
     parser.add_argument("--min-price", dest="min_price", type=float, default=50_000.0, help="Minimum sale price filter in USD (default: 50000)")
+    parser.add_argument("--no-shelby", action="store_true", help="Skip Shelby County (Memphis TN) entirely")
+    parser.add_argument("--no-bergen", action="store_true", help="Skip Bergen County (NJ) entirely")
     parser.add_argument("--no-email", action="store_true", help="Skip email delivery")
     parser.add_argument("--no-sheets", action="store_true", help="Skip Google Sheets upload")
     args = parser.parse_args()
@@ -73,69 +77,75 @@ def main() -> None:
     all_cash_records: list[dict] = []
 
     # ── 1. Shelby County (Memphis TN) ────────────────────────────────────────
-    logger.info("--- Shelby County (Memphis TN) ---")
-    try:
-        from src.scrapers.shelby import scrape_shelby, build_deed_url
-        from src.cash_filter import filter_cash_sales_shelby
+    if args.no_shelby:
+        logger.info("--- Shelby County (Memphis TN) skipped (--no-shelby) ---")
+    else:
+        logger.info("--- Shelby County (Memphis TN) ---")
+        try:
+            from src.scrapers.shelby import scrape_shelby, build_deed_url
+            from src.cash_filter import filter_cash_sales_shelby
 
-        zip_list = [z.strip() for z in args.zip_codes.split(",") if z.strip()] if args.zip_codes else None
-        raw_shelby = scrape_shelby(days=args.days, zip_codes=zip_list, zip_code=args.zip_code)
-        logger.info("Shelby: %d raw deed records", len(raw_shelby))
+            zip_list = [z.strip() for z in args.zip_codes.split(",") if z.strip()] if args.zip_codes else None
+            raw_shelby = scrape_shelby(days=args.days, zip_codes=zip_list, zip_code=args.zip_code)
+            logger.info("Shelby: %d raw deed records", len(raw_shelby))
 
-        cash_shelby = filter_cash_sales_shelby(raw_shelby, min_price=args.min_price)
-        logger.info("Shelby: %d confirmed cash sales after filter", len(cash_shelby))
+            cash_shelby = filter_cash_sales_shelby(raw_shelby, min_price=args.min_price)
+            logger.info("Shelby: %d confirmed cash sales after filter", len(cash_shelby))
 
-        for r in cash_shelby:
-            r["deed_url"] = build_deed_url(r.get("record_number", ""), r.get("sale_date", ""))
+            for r in cash_shelby:
+                r["deed_url"] = build_deed_url(r.get("record_number", ""), r.get("sale_date", ""))
 
-        # ── Assessor lookup pass (Shelby only — no Bergen County equivalent) ──
-        if cash_shelby:
-            logger.info("--- Assessor lookups (%d confirmed Shelby cash sales) ---", len(cash_shelby))
-            try:
-                from src.assessor import lookup_parcels
-                from src.normalize import names_share_tokens
+            # ── Assessor lookup pass (Shelby only — no Bergen County equivalent) ──
+            if cash_shelby:
+                logger.info("--- Assessor lookups (%d confirmed Shelby cash sales) ---", len(cash_shelby))
+                try:
+                    from src.assessor import lookup_parcels
+                    from src.normalize import names_share_tokens
 
-                addresses = [r.get("property_address", "") for r in cash_shelby]
-                assessor_results = lookup_parcels(addresses)
+                    addresses = [r.get("property_address", "") for r in cash_shelby]
+                    assessor_results = lookup_parcels(addresses)
 
-                for r in cash_shelby:
-                    info = assessor_results.get(r.get("property_address", ""), {})
-                    r["assessor_url"] = info.get("assessor_url", "")
-                    r["assessor_owner_name"] = info.get("owner_name", "")
-                    r["assessor_match_type"] = info.get("match_type", "none")
-                    r["assessor_sales_history"] = info.get("sales_history", [])
-                    r["assessor_candidates"] = info.get("candidates", [])
-                    # Only trust the Assessor's mailing address once its owner
-                    # has already updated to reflect THIS buyer (token match)
-                    # -- otherwise it's the prior owner/seller's mailing
-                    # address, which would silently inject wrong data given
-                    # the ~60% week-1-2 lag rate measured against live data.
-                    owner_name = info.get("owner_name", "")
-                    if owner_name and names_share_tokens(owner_name, r.get("buyer_name", "")):
-                        r["buyer_mailing_address"] = info.get("owner_mailing_address", "")
-            except Exception as e:
-                logger.error("Assessor lookup pass failed: %s", e, exc_info=True)
-                for r in cash_shelby:
-                    r.setdefault("assessor_url", "")
-                    r.setdefault("assessor_match_type", "none")
+                    for r in cash_shelby:
+                        info = assessor_results.get(r.get("property_address", ""), {})
+                        r["assessor_url"] = info.get("assessor_url", "")
+                        r["assessor_owner_name"] = info.get("owner_name", "")
+                        r["assessor_match_type"] = info.get("match_type", "none")
+                        r["assessor_sales_history"] = info.get("sales_history", [])
+                        r["assessor_candidates"] = info.get("candidates", [])
+                        # Only trust the Assessor's mailing address once its owner
+                        # has already updated to reflect THIS buyer (token match)
+                        # -- otherwise it's the prior owner/seller's mailing
+                        # address, which would silently inject wrong data given
+                        # the ~60% week-1-2 lag rate measured against live data.
+                        owner_name = info.get("owner_name", "")
+                        if owner_name and names_share_tokens(owner_name, r.get("buyer_name", "")):
+                            r["buyer_mailing_address"] = info.get("owner_mailing_address", "")
+                except Exception as e:
+                    logger.error("Assessor lookup pass failed: %s", e, exc_info=True)
+                    for r in cash_shelby:
+                        r.setdefault("assessor_url", "")
+                        r.setdefault("assessor_match_type", "none")
 
-        all_cash_records.extend(cash_shelby)
-    except Exception as e:
-        logger.error("Shelby County scraper failed: %s", e, exc_info=True)
+            all_cash_records.extend(cash_shelby)
+        except Exception as e:
+            logger.error("Shelby County scraper failed: %s", e, exc_info=True)
 
     # ── 2. Bergen County (Bergen County NJ) ──────────────────────────────────
     # Uses a single Playwright browser session for both scraping and cash-filter
     # mortgage checks (reCAPTCHA v3 token is shared across both steps).
-    logger.info("--- Bergen County NJ ---")
-    try:
-        from src.scrapers.bergen import run_bergen_pipeline
+    if args.no_bergen:
+        logger.info("--- Bergen County NJ skipped (--no-bergen) ---")
+    else:
+        logger.info("--- Bergen County NJ ---")
+        try:
+            from src.scrapers.bergen import run_bergen_pipeline
 
-        bergen_muni_list = [m.strip() for m in args.bergen_municipalities.split(",") if m.strip()] if args.bergen_municipalities else None
-        cash_bergen = run_bergen_pipeline(days=args.days, zip_code=args.zip_code, municipalities=bergen_muni_list)
-        logger.info("Bergen: %d confirmed cash sales after filter", len(cash_bergen))
-        all_cash_records.extend(cash_bergen)
-    except Exception as e:
-        logger.error("Bergen County scraper failed: %s", e, exc_info=True)
+            bergen_muni_list = [m.strip() for m in args.bergen_municipalities.split(",") if m.strip()] if args.bergen_municipalities else None
+            cash_bergen = run_bergen_pipeline(days=args.days, zip_code=args.zip_code, municipalities=bergen_muni_list)
+            logger.info("Bergen: %d confirmed cash sales after filter", len(cash_bergen))
+            all_cash_records.extend(cash_bergen)
+        except Exception as e:
+            logger.error("Bergen County scraper failed: %s", e, exc_info=True)
 
     if not all_cash_records:
         logger.warning("No cash records found — nothing to output")

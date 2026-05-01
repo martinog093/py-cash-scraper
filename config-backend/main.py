@@ -179,10 +179,23 @@ async def run_scrapers(req: RunRequest):
                     continue
 
                 dispatch_inputs: dict[str, str] = {}
-                if scraper == "cash_buyer" and req.zips:
-                    dispatch_inputs["shelby_zips"] = ",".join(req.zips)
-                if scraper == "cash_buyer" and req.bergen_municipalities:
-                    dispatch_inputs["bergen_municipalities"] = ",".join(req.bergen_municipalities)
+                if scraper == "cash_buyer" and req.zips is not None:
+                    # req.zips is None when every ZIP is checked (use the
+                    # workflow's default of "all 41"). An explicit empty list
+                    # (every ZIP unchecked) must be distinguished from that —
+                    # joining [] into "" would be indistinguishable from the
+                    # unset default and silently fall back to "all", so skip
+                    # Shelby entirely instead via a dedicated flag.
+                    if req.zips:
+                        dispatch_inputs["shelby_zips"] = ",".join(req.zips)
+                    else:
+                        dispatch_inputs["skip_shelby"] = "true"
+                if scraper == "cash_buyer" and req.bergen_municipalities is not None:
+                    # Same distinction as above, for Bergen municipalities.
+                    if req.bergen_municipalities:
+                        dispatch_inputs["bergen_municipalities"] = ",".join(req.bergen_municipalities)
+                    else:
+                        dispatch_inputs["skip_bergen"] = "true"
                 if scraper == "cash_buyer" and req.days:
                     dispatch_inputs["days"] = str(req.days)
                 if scraper == "cash_buyer" and req.min_price:

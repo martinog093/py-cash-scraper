@@ -7,6 +7,10 @@ on:
         description: 'Shelby County ZIP codes (comma-separated; leave blank for all 41)'
         required: false
         default: ''
+      skip_shelby:
+        description: 'Skip Shelby County entirely (used when zero ZIPs are selected)'
+        required: false
+        default: 'false'
       days:
         description: Number of days back to scrape (default 7)
         required: false
@@ -19,6 +23,10 @@ on:
         description: 'Bergen County municipalities (comma-separated; leave blank for all 39)'
         required: false
         default: ''
+      skip_bergen:
+        description: 'Skip Bergen County entirely (used when zero municipalities are selected)'
+        required: false
+        default: 'false'
   # schedule:
   #   - cron: '0 8 * * 0'   # Sundays 8:00 AM UTC (3:00 AM EST) — set schedule with Kash
 
@@ -54,14 +62,20 @@ jobs:
         working-directory: "Cash Buyer Scraper"
         run: |
           ZIPS="${{ inputs.shelby_zips }}"
+          SKIP_SHELBY="${{ inputs.skip_shelby }}"
           DAYS="${{ inputs.days }}"
           MIN_PRICE="${{ inputs.min_price }}"
           BERGEN_MUNIS="${{ inputs.bergen_municipalities }}"
+          SKIP_BERGEN="${{ inputs.skip_bergen }}"
           CMD="xvfb-run -a python main.py --no-sheets"
           [ -n "$ZIPS" ] && CMD="$CMD --zips $ZIPS"
+          [ "$SKIP_SHELBY" = "true" ] && CMD="$CMD --no-shelby"
           [ -n "$DAYS" ] && CMD="$CMD --days $DAYS"
           [ -n "$MIN_PRICE" ] && CMD="$CMD --min-price $MIN_PRICE"
           [ -n "$BERGEN_MUNIS" ] && CMD="$CMD --bergen-municipalities \"$BERGEN_MUNIS\""
+          [ "$SKIP_BERGEN" = "true" ] && CMD="$CMD --no-bergen"
+          echo "Dispatch inputs received — shelby_zips='$ZIPS' skip_shelby='$SKIP_SHELBY' days='$DAYS' min_price='$MIN_PRICE' bergen_municipalities='$BERGEN_MUNIS' skip_bergen='$SKIP_BERGEN'"
+          echo "Running: $CMD"
           eval $CMD
 
       - name: Persist buyer history DB
